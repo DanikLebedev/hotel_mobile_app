@@ -1,20 +1,56 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, SafeAreaView } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    SafeAreaView,
+    TouchableOpacity,
+
+} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ClientContext } from '../../context/client.context';
 import Constants from 'expo-constants';
 import DatePicker from 'react-native-datepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { Ionicons } from '@expo/vector-icons';
-import { Themed } from 'react-navigation';
+import { OrderService } from '../../APIServices/orderService';
+import { OrderCarts, OrderCart } from '../../interfaces/clientInterfaces';
+import Toast,{DURATION} from 'react-native-easy-toast'
+import { SearchResultsScreen } from '../SearchResultsScreen/SearchResultScreen';
+import { RoomInfoScreen } from '../RoomInfoScreen/RoomInfoScreen';
 
 const HomeScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string | number>(
-        '',
-    );
+    const [selectedCategory, setSelectedCategory] = useState<string | number>('');
+    const toastEl = useRef(null)
+
+
+    const findRoomHandler = async () => {
+        if (context.isAuthenticated) {
+            const { ordercarts }: OrderCarts = await OrderService.getAllOrders();
+            const bookedOrders: OrderCart[] = ordercarts.filter(order => {
+                return (
+                    order.category === selectedCategory &&
+                    Date.parse(order.checkOut) > Date.parse(checkIn) &&
+                    order.status === 'booked'
+                );
+            });
+            const filteredByCategoryOrders: OrderCart[] = ordercarts.filter(order => {
+                return order.category === selectedCategory;
+            });
+            console.log(filteredByCategoryOrders)
+            if (bookedOrders.length !== 0) {
+                toastEl.current.show('sorry all rooms booked', 500)
+            } else {
+                navigation.navigate('SearchResults', {category: filteredByCategoryOrders[0].category})
+            }
+        } else {
+            navigation.navigate('Login');
+        }
+    }
 
     const checkInPicker = (
         <DatePicker
@@ -103,35 +139,46 @@ const HomeScreenBody = ({ navigation }) => {
                             <Ionicons name={'ios-list'} size={26} />
                             <View style={styles.SearchFormSelect}>
                                 <RNPickerSelect
-                                    onValueChange={value => console.log(value)}
+                                    onValueChange={value =>
+                                        setSelectedCategory(value)
+                                    }
                                     style={{
                                         placeholder: {
-                                            textAlign: 'center'
+                                            textAlign: 'center',
                                         },
                                         modalViewTop: {
-                                            backgroundColor: '#00000077'
+                                            backgroundColor: '#00000077',
                                         },
                                         modalViewBottom: {
                                             backgroundColor: '#000',
                                         },
-                                       done: {
-                                            color: '#000'
-                                       }
-
+                                        done: {
+                                            color: '#000',
+                                        },
                                     }}
                                     items={[
                                         {
                                             label: 'President',
                                             value: 'President',
-                                            color: '#fff'
+                                            color: '#fff',
                                         },
-                                        { label: 'Family', value: 'President', color: '#fff' },
+                                        {
+                                            label: 'Family',
+                                            value: 'Family',
+                                            color: '#fff',
+                                        },
                                     ]}
                                 />
                             </View>
                         </View>
                     </View>
+                    <View>
+                        <TouchableOpacity onPress={findRoomHandler}>
+                            <Text>Find room</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <Toast ref={toastEl}/>
             </ScrollView>
         </SafeAreaView>
     );
@@ -152,6 +199,28 @@ export const HomeScreen = () => {
                     headerTitle: props => <LogoTitle {...props} />,
                     headerStyle: { backgroundColor: '#000' },
                 }}
+            />
+            <HomeStack.Screen
+                name={'SearchResults'}
+                component={SearchResultsScreen}
+                options={{
+                    headerStyle: { backgroundColor: '#000' },
+                    headerTitleStyle: { color: '#fff' },
+                    headerBackTitleStyle: { color: '#fff' },
+                    headerTintColor: '#fff',
+                }}
+
+            />
+            <HomeStack.Screen
+                name={'RoomInfo'}
+                component={RoomInfoScreen}
+                options={{
+                    headerStyle: { backgroundColor: '#000' },
+                    headerTitleStyle: { color: '#fff' },
+                    headerBackTitleStyle: { color: '#fff' },
+                    headerTintColor: '#fff',
+                }}
+
             />
         </HomeStack.Navigator>
     );
@@ -200,10 +269,10 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         width: 265,
         padding: 11,
-        marginLeft: 15
+        marginLeft: 15,
     },
     SearchFormSelectWrapper: {
-       flexDirection: 'row',
-        alignItems: 'center'
-    }
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
 });

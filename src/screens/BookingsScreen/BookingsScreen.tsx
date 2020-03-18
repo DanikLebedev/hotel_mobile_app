@@ -12,10 +12,10 @@ export const BookingsScreenBody = () => {
 };
 
 export const BookingsScreen = () => {
-    const SearchStack = createStackNavigator();
+    const BookingStack = createStackNavigator();
     return (
-        <SearchStack.Navigator>
-            <SearchStack.Screen
+        <BookingStack.Navigator>
+            <BookingStack.Screen
                 name={'Search'}
                 component={BookingsScreenBody}
                 options={{
@@ -23,7 +23,7 @@ export const BookingsScreen = () => {
                     headerTitleStyle: { color: '#fff' },
                 }}
             />
-        </SearchStack.Navigator>
+        </BookingStack.Navigator>
     );
 };
 

@@ -3,6 +3,9 @@ import { StyleSheet, StatusBar } from 'react-native';
 import { Navigation } from './src/components/Navigation/Navigation';
 import { useAuth } from './src/deviceStorage';
 import { ClientContext } from './src/context/client.context';
+import { useCallback, useEffect, useState } from 'react';
+import { Room } from './src/interfaces/clientInterfaces';
+import { RoomService } from './src/APIServices/roomService';
 
 export default function App() {
     const {
@@ -14,6 +17,15 @@ export default function App() {
         userStatus,
     } = useAuth();
     const isAuthenticated = !!token;
+    const [fetchedAllRooms, setFetchedAllRooms] = useState<Room[]>()
+
+    const fetchAllRooms = useCallback(() => {
+        RoomService.getAllRooms().then(({rooms}) => setFetchedAllRooms(rooms))
+    }, [])
+
+    useEffect(() => {
+        fetchAllRooms()
+    }, [fetchAllRooms])
 
     return (
         <ClientContext.Provider
@@ -25,6 +37,7 @@ export default function App() {
                 userEmail,
                 userStatus,
                 isAuthenticated,
+                fetchedAllRooms
             }}
         >
             <StatusBar barStyle={'light-content'} />

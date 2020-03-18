@@ -1,28 +1,3 @@
-// import { AsyncStorage } from 'react-native';
-//
-// export const deviceStorage = {
-//     async saveItem(token, userId, userEmail) {
-//         try {
-//             await AsyncStorage.setItem('@token', token);
-//             await AsyncStorage.setItem('@userId', userId);
-//             await AsyncStorage.setItem('@userEmail', userEmail);
-//         } catch (e) {
-//             console.log(e.message);
-//         }
-//     },
-//
-//     async getItem(key) {
-//         try {
-//             const value = await AsyncStorage.getItem(key);
-//             if(value !== null) {
-//                 return value
-//             }
-//         } catch (e) {
-//             console.log(e.message)
-//         }
-//     }
-// };
-
 import { useCallback, useEffect, useState } from 'react';
 import { AsyncStorage } from 'react-native';
 
@@ -33,7 +8,7 @@ interface Storage {
     email: string;
 }
 
-const storageName = 'userData'
+const storageName = 'userData';
 
 export const useAuth = () => {
     const [token, setToken] = useState(null);
@@ -46,9 +21,15 @@ export const useAuth = () => {
         setUserId(id);
         setUserStatus(status);
         setUserEmail(email);
-       await AsyncStorage.setItem(storageName, JSON.stringify({
-           token: jwtToken,userId: id, userStatus: status, userEmail: email
-       }))
+        await AsyncStorage.setItem(
+            storageName,
+            JSON.stringify({
+                token: jwtToken,
+                userId: id,
+                userStatus: status,
+                userEmail: email,
+            }),
+        );
     }, []);
     const logoutUser = useCallback(async () => {
         setToken(null);
@@ -56,21 +37,25 @@ export const useAuth = () => {
         setUserStatus('');
         setUserEmail('');
         await AsyncStorage.removeItem(storageName);
-        }, []);
+    }, []);
 
     useEffect(() => {
         AsyncStorage.getItem(storageName).then(data => {
-            console.log(data)
             if (data) {
-                const userData = JSON.parse(data)
-                if (userData && userData.token) {{
-                    loginUser(userData.token, userData.userId, userData.status, userData.email)
-                }}
+                const userData = JSON.parse(data);
+                if (userData && userData.token) {
+                    {
+                        loginUser(
+                            userData.token,
+                            userData.userId,
+                            userData.status,
+                            userData.email,
+                        );
+                    }
+                }
             }
-        })
-
+        });
     }, [loginUser]);
 
     return { loginUser, logoutUser, token, userId, userStatus, userEmail };
 };
-

@@ -1,28 +1,29 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { MoreScreenBody } from '../MoreScreen/MoreScreen';
 
-export const MoreScreenBody = () => {
+export const BookingsScreenBody = () => {
     return (
         <View style={styles.container}>
-            <Text style={{ textAlign: 'center' }}>MoreScreen</Text>
+            <Text style={{ textAlign: 'center' }}>Orders Screen</Text>
         </View>
     );
 };
 
-export const MoreScreen = () => {
-    const MoreStack = createStackNavigator();
+export const BookingsScreen = () => {
+    const SearchStack = createStackNavigator();
     return (
-        <MoreStack.Navigator>
-            <MoreStack.Screen
-                name={'More'}
-                component={MoreScreenBody}
+        <SearchStack.Navigator>
+            <SearchStack.Screen
+                name={'Search'}
+                component={BookingsScreenBody}
                 options={{
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
                 }}
             />
-        </MoreStack.Navigator>
+        </SearchStack.Navigator>
     );
 };
 

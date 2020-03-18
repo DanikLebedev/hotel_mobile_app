@@ -4,7 +4,7 @@ import { HomeScreen } from '../../screens/HomeScreen/HomeScreen';
 import { ProfileScreen } from '../../screens/ProfileScreen/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { SearchScreen } from '../../screens/SearchScreen/SearchScreen';
+import { BookingsScreen } from '../../screens/BookingsScreen/BookingsScreen';
 import { MoreScreen } from '../../screens/MoreScreen/MoreScreen';
 
 export const Navigation = () => {
@@ -15,7 +15,7 @@ export const Navigation = () => {
             <Tab.Navigator
                 initialRouteName="Home"
                 activeColor="#fff"
-                barStyle={{ backgroundColor: '#c6a47e'}}
+                barStyle={{ backgroundColor: '#000' }}
             >
                 <Tab.Screen
                     name={'Home'}
@@ -33,18 +33,22 @@ export const Navigation = () => {
                     options={{
                         tabBarLabel: 'Profile',
                         tabBarIcon: ({ color }) => (
-                            <Ionicons name="ios-person" color={color} size={26} />
+                            <Ionicons
+                                name="ios-person"
+                                color={color}
+                                size={26}
+                            />
                         ),
                     }}
                 />
                 <Tab.Screen
-                    name={'Search'}
-                    component={SearchScreen}
+                    name={'Bookings'}
+                    component={BookingsScreen}
                     options={{
-                        tabBarLabel: 'Search',
+                        tabBarLabel: 'Bookings',
                         tabBarIcon: ({ color }) => (
                             <Ionicons
-                                name="ios-search"
+                                name="ios-briefcase"
                                 color={color}
                                 size={26}
                             />

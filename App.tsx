@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { StyleSheet, StatusBar } from 'react-native';
 import { Navigation } from './src/components/Navigation/Navigation';
-import { useAuth } from './src/deviceStorage';
+import { useAuth } from './src/hooks/deviceStorage';
 import { ClientContext } from './src/context/client.context';
 import { useCallback, useEffect, useState } from 'react';
-import { Room } from './src/interfaces/clientInterfaces';
+import { Article, Category, Room } from './src/interfaces/clientInterfaces';
 import { RoomService } from './src/APIServices/roomService';
+import { ArticleService } from './src/APIServices/articleService';
+import { CategoryService } from './src/APIServices/categoryService';
 
 export default function App() {
     const {
@@ -17,15 +19,35 @@ export default function App() {
         userStatus,
     } = useAuth();
     const isAuthenticated = !!token;
-    const [fetchedAllRooms, setFetchedAllRooms] = useState<Room[]>()
+    const [fetchedAllRooms, setFetchedAllRooms] = useState<Room[]>([]);
+    const [fetchedAllArticles, setFetchedAllArticles] = useState<Article[]>([]);
+    const [fetchedAllCategories, setFetchedAllCategories] = useState<
+        Category[]
+    >([]);
 
     const fetchAllRooms = useCallback(() => {
-        RoomService.getAllRooms().then(({rooms}) => setFetchedAllRooms(rooms))
-    }, [])
+        RoomService.getAllRooms().then(({ rooms }) =>
+            setFetchedAllRooms(rooms),
+        );
+    }, []);
+
+    const fetchAllArticles = useCallback(() => {
+        ArticleService.getAllArticles().then(({ article }) => {
+            setFetchedAllArticles(article);
+        });
+    }, []);
+
+    const fetchAllCategories = useCallback(() => {
+        CategoryService.getAllCategories().then(({ categories }) => {
+            setFetchedAllCategories(categories);
+        });
+    }, []);
 
     useEffect(() => {
-        fetchAllRooms()
-    }, [fetchAllRooms])
+        fetchAllRooms();
+        fetchAllArticles();
+        fetchAllCategories();
+    }, [fetchAllRooms, fetchAllArticles, fetchAllCategories]);
 
     return (
         <ClientContext.Provider
@@ -37,7 +59,9 @@ export default function App() {
                 userEmail,
                 userStatus,
                 isAuthenticated,
-                fetchedAllRooms
+                fetchedAllRooms,
+                fetchedAllArticles,
+                fetchedAllCategories,
             }}
         >
             <StatusBar barStyle={'light-content'} />

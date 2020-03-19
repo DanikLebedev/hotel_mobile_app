@@ -7,7 +7,11 @@ export class CRUDServices {
         return data;
     }
 
-    public static async postData(url: string, body: any, headers: any): Promise<any> {
+    public static async postData(
+        url: string,
+        body: any,
+        headers: any,
+    ): Promise<any> {
         body = JSON.stringify(body);
         const response: Response = await fetch(url, {
             method: 'POST',
@@ -17,7 +21,11 @@ export class CRUDServices {
         const data: Data = await response.json();
         return data;
     }
-    public static async deleteData(url: string, body: any, headers: any): Promise<any> {
+    public static async deleteData(
+        url: string,
+        body: any,
+        headers: any,
+    ): Promise<any> {
         const response: Response = await fetch(url, {
             method: 'DELETE',
             body,
@@ -27,7 +35,11 @@ export class CRUDServices {
         return data;
     }
 
-    public static async putData(url: string, body: any, headers: any): Promise<any> {
+    public static async putData(
+        url: string,
+        body: any,
+        headers: any,
+    ): Promise<any> {
         const response: Response = await fetch(url, {
             method: 'PUT',
             body,

@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { Room } from '../interfaces/clientInterfaces';
+import { Article, Category, Room } from '../interfaces/clientInterfaces';
 
 export interface ClientContext {
     token: string | null;
@@ -9,7 +9,9 @@ export interface ClientContext {
     isAuthenticated: boolean;
     userStatus: string;
     userEmail: string;
-    fetchedAllRooms: Room[]
+    fetchedAllRooms: Room[];
+    fetchedAllArticles: Article[];
+    fetchedAllCategories: Category[];
 }
 
 function noop() {}
@@ -36,4 +38,6 @@ export const ClientContext = createContext<ClientContext>({
             _id: '',
         },
     ],
+    fetchedAllArticles: [{ title: '', image: '', text: '', createdAt: '' }],
+    fetchedAllCategories: [{ title: '' }],
 });

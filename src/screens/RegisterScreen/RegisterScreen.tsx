@@ -4,7 +4,7 @@ import { ChangeEvent, useContext, useState } from 'react';
 import { config } from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
 import { Input, Button } from 'react-native-elements';
-import { useAuth } from '../../deviceStorage';
+import { useAuth } from '../../hooks/deviceStorage';
 import { useNavigation } from '@react-navigation/native';
 import { ClientContext } from '../../context/client.context';
 
@@ -19,13 +19,16 @@ export const RegisterScreen = () => {
     const registerHandler = async () => {
         const form = { email, password, name, lastName };
         try {
-            const response = await fetch(config.API_URL + '/api/auth/login', {
-                method: 'POST',
-                body: JSON.stringify(form),
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                config.API_URL + '/api/auth/register',
+                {
+                    method: 'POST',
+                    body: JSON.stringify(form),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 },
-            });
+            );
             const data = await response.json();
             console.log(data);
             await context.loginUser(

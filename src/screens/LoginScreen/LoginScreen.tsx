@@ -2,9 +2,7 @@ import * as React from 'react';
 import {
     StyleSheet,
     View,
-    TextInput,
-    Text,
-    ActivityIndicator,
+    ImageBackground,
 } from 'react-native';
 import { ChangeEvent, useContext, useState } from 'react';
 import { config } from '../../../config';
@@ -12,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Input, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { ClientContext } from '../../context/client.context';
+import { Loader } from '../../components/Loader/Loader';
 
 export const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -46,54 +45,70 @@ export const LoginScreen = () => {
     };
 
     if (loading) {
-        return (
-            <View style={styles.container}>
-                <ActivityIndicator size={'large'} color={'#000'} />
-            </View>
-        );
+        return <Loader />;
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.loginWrapper}>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-mail" size={26} />}
-                        value={email}
-                        keyboardType={'email-address'}
-                        textContentType="emailAddress"
-                        onChangeText={text => setEmail(text)}
-                        placeholder={'email'}
-                        inputStyle={styles.inputStyle}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-lock" size={26} />}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                        placeholder={'password'}
-                        textContentType={'password'}
-                        inputStyle={styles.inputStyle}
-                        secureTextEntry={true}
-                    />
-                </View>
-                <Button
-                    iconRight
-                    icon={
-                        <Ionicons
-                            name={'ios-log-in'}
-                            color={'#fff'}
-                            size={26}
+        <ImageBackground
+            blurRadius={5}
+            source={require('../../../assets/loginScreen.jpg')}
+            style={styles.backgroundImage}
+        >
+            <View style={styles.container}>
+                <View style={styles.loginWrapper}>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={
+                                <Ionicons
+                                    name="ios-mail"
+                                    color={'#fff'}
+                                    size={26}
+                                />
+                            }
+                            value={email}
+                            keyboardType={'email-address'}
+                            textContentType="emailAddress"
+                            placeholderTextColor={'#fff'}
+                            onChangeText={text => setEmail(text)}
+                            placeholder={'email'}
+                            inputStyle={styles.inputStyle}
                         />
-                    }
-                    raised
-                    title={'Login  '}
-                    onPress={loginHandler}
-                    buttonStyle={styles.unregisterButton}
-                />
+                    </View>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={
+                                <Ionicons
+                                    name="ios-lock"
+                                    color={'#fff'}
+                                    size={26}
+                                />
+                            }
+                            value={password}
+                            onChangeText={text => setPassword(text)}
+                            placeholder={'password'}
+                            placeholderTextColor={'#fff'}
+                            textContentType={'password'}
+                            inputStyle={styles.inputStyle}
+                            secureTextEntry={true}
+                        />
+                    </View>
+                    <Button
+                        iconRight
+                        icon={
+                            <Ionicons
+                                name={'ios-log-in'}
+                                color={'#fff'}
+                                size={26}
+                            />
+                        }
+                        raised
+                        title={'Login  '}
+                        onPress={loginHandler}
+                        buttonStyle={styles.unregisterButton}
+                    />
+                </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 };
 
@@ -115,9 +130,16 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         marginLeft: 10,
+        color: '#fff',
     },
     unregisterButton: {
         width: 200,
         backgroundColor: '#000',
+    },
+    backgroundImage: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'cover',
     },
 });

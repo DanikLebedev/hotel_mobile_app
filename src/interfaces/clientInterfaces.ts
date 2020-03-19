@@ -21,7 +21,13 @@ export interface Categories {
 
 export interface Data extends Response {
     message: string;
-    data?: Status[] | OrderCart[] | Room[] | Customer[] | Category[] | Feedback[];
+    data?:
+        | Status[]
+        | OrderCart[]
+        | Room[]
+        | Customer[]
+        | Category[]
+        | Feedback[];
     ordercarts?: OrderCart[];
 }
 

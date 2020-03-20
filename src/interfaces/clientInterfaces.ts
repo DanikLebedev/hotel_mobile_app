@@ -84,7 +84,7 @@ export interface Order {
     category: string;
     checkIn: string;
     checkOut: string;
-    guests: number;
+    guests: number | string;
     _id?: string;
     status?: string;
     price: number;

@@ -1,10 +1,11 @@
 import { UserData } from '../interfaces/clientInterfaces';
 import { CRUDServices } from './CRUDServices';
+import { config } from '../../config';
 
 export class AuthService {
     public static async loginUser(body: {}, headers?: {}): Promise<UserData> {
         const response: UserData = await CRUDServices.postData(
-            '/api/auth/login',
+            config.API_URL + '/api/auth/login',
             body,
             headers,
         );
@@ -16,7 +17,7 @@ export class AuthService {
         headers?: {},
     ): Promise<UserData> {
         const response: UserData = await CRUDServices.postData(
-            '/api/auth/register',
+            config.API_URL + '/api/auth/register',
             body,
             headers,
         );

@@ -13,10 +13,13 @@ import { ClientContext } from '../../context/client.context';
 import { Button } from 'react-native-elements';
 import { RegisterScreen } from '../RegisterScreen/RegisterScreen';
 import { Ionicons } from '@expo/vector-icons';
+import { Customer } from '../../interfaces/clientInterfaces';
+import { CustomerService } from '../../APIServices/customerService';
 
 const ProfileScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [fadeAnim] = useState(new Animated.Value(0));
+    const [userInfo, setUserInfo] = useState<Customer>(context.fetchedUserInfo);
 
     const registerLayout = (
         <View style={styles.container}>
@@ -27,9 +30,10 @@ const ProfileScreenBody = ({ navigation }) => {
                         name={'ios-person'}
                         size={160}
                     />
-                    <Text style={styles.name}>John Doe </Text>
-                    <Text style={styles.userInfo}>jhonnydoe@mail.com </Text>
-                    <Text style={styles.userInfo}>Florida </Text>
+                    <Text style={styles.name}>
+                        {userInfo.name} {userInfo.lastName}
+                    </Text>
+                    <Text style={styles.userInfo}>{userInfo.email}</Text>
                 </View>
             </View>
             <View style={styles.body}>
@@ -128,7 +132,10 @@ const ProfileScreenBody = ({ navigation }) => {
             toValue: 1,
             duration: 1000,
         }).start();
-    }, []);
+        CustomerService.getCustomer({
+            Authorization: `Bearer ${context.token}`,
+        }).then(customer => setUserInfo(customer));
+    }, [context.token]);
 
     return (
         <View style={styles.container}>

@@ -13,6 +13,7 @@ import {
     Dimensions,
     ImageBackground,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-anchor-carousel';
 import { ClientContext } from '../../context/client.context';
 import { Article } from '../../interfaces/clientInterfaces';
@@ -24,11 +25,17 @@ const { width } = Dimensions.get('window');
 export const ImageCarousel = () => {
     const fetchedArticles = useContext(ClientContext).fetchedAllArticles;
     const [articles, setArticles] = useState<Article[]>(fetchedArticles);
+    const navigation = useNavigation();
 
     const renderItem = ({ item, index }) => {
         const { createdAt, title, text, image }: Article = item;
         return (
-            <TouchableOpacity style={styles.item}>
+            <TouchableOpacity
+                style={styles.item}
+                onPress={() =>
+                    navigation.navigate('ArticleInfo', { articleId: item._id })
+                }
+            >
                 <ImageBackground
                     source={{ uri: config.API_URL + '/static/' + image }}
                     style={styles.imageBackground}

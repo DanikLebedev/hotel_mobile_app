@@ -4,10 +4,16 @@ import { Navigation } from './src/components/Navigation/Navigation';
 import { useAuth } from './src/hooks/deviceStorage';
 import { ClientContext } from './src/context/client.context';
 import { useCallback, useEffect, useState } from 'react';
-import { Article, Category, Room } from './src/interfaces/clientInterfaces';
+import {
+    Article,
+    Category,
+    Customer,
+    Room,
+} from './src/interfaces/clientInterfaces';
 import { RoomService } from './src/APIServices/roomService';
 import { ArticleService } from './src/APIServices/articleService';
 import { CategoryService } from './src/APIServices/categoryService';
+import { CustomerService } from './src/APIServices/customerService';
 
 export default function App() {
     const {
@@ -24,6 +30,20 @@ export default function App() {
     const [fetchedAllCategories, setFetchedAllCategories] = useState<
         Category[]
     >([]);
+    const [fetchedUserInfo, setFetchedUserInfo] = useState<Customer>({
+        email: '',
+        lastName: '',
+        name: '',
+        order: [],
+        password: '',
+    });
+
+    const fetchCustomerInfo: CallableFunction = useCallback(async () => {
+        const customer: Customer = await CustomerService.getCustomer({
+            Authorization: `Bearer ${token}`,
+        });
+        setFetchedUserInfo(customer);
+    }, [token]);
 
     const fetchAllRooms = useCallback(() => {
         RoomService.getAllRooms().then(({ rooms }) =>
@@ -47,6 +67,7 @@ export default function App() {
         fetchAllRooms();
         fetchAllArticles();
         fetchAllCategories();
+        fetchCustomerInfo();
     }, [fetchAllRooms, fetchAllArticles, fetchAllCategories]);
 
     return (
@@ -62,6 +83,7 @@ export default function App() {
                 fetchedAllRooms,
                 fetchedAllArticles,
                 fetchedAllCategories,
+                fetchedUserInfo,
             }}
         >
             <StatusBar barStyle={'light-content'} />

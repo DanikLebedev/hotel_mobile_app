@@ -26,6 +26,7 @@ import Toast from 'react-native-tiny-toast';
 import { ErrorToast } from '../../components/Toast/Toast';
 import { Loader } from '../../components/Loader/Loader';
 import { CategoryService } from '../../APIServices/categoryService';
+import { ArticleInfoScreen } from '../ArticleInfoScreen/ArticleInfoScreen';
 
 const HomeScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
@@ -166,7 +167,7 @@ const HomeScreenBody = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
+            <ScrollView>
                 <View style={styles.findRoomForm}>
                     <View style={styles.mainTitleWrapper}>
                         <Text style={styles.mainTitleText}>Find your room</Text>
@@ -241,12 +242,20 @@ const HomeLogoTitle = props => {
 const SearchLogoTitle = props => {
     return (
         <View style={styles.searchHeader}>
-            <Ionicons name={'ios-search'} color={'#fff'} size={26}/>
+            <Ionicons name={'ios-search'} color={'#fff'} size={26} />
             <Text style={styles.headerTitle}>Results</Text>
         </View>
-    )
-}
+    );
+};
 
+const RoomInfoLogoTitle = props => {
+    return (
+        <View style={styles.searchHeader}>
+            <Ionicons name={'ios-search'} color={'#fff'} size={26} />
+            <Text style={styles.headerTitle}>Results</Text>
+        </View>
+    );
+};
 
 export const HomeScreen = () => {
     const HomeStack = createStackNavigator();
@@ -264,17 +273,26 @@ export const HomeScreen = () => {
                 name={'SearchResults'}
                 component={SearchResultsScreen}
                 options={{
-                    headerTitle: props => <SearchLogoTitle {...props}/>,
+                    headerTitle: props => <SearchLogoTitle {...props} />,
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },
                     headerTintColor: '#fff',
                 }}
-
             />
             <HomeStack.Screen
                 name={'RoomInfo'}
                 component={RoomInfoScreen}
+                options={{
+                    headerStyle: { backgroundColor: '#000' },
+                    headerTitleStyle: { color: '#fff' },
+                    headerBackTitleStyle: { color: '#fff' },
+                    headerTintColor: '#fff',
+                }}
+            />
+            <HomeStack.Screen
+                name={'ArticleInfo'}
+                component={ArticleInfoScreen}
                 options={{
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
@@ -295,7 +313,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: '#fff',
         fontWeight: 'bold',
-        marginLeft: 10
+        marginLeft: 10,
     },
     mainTitleWrapper: {
         flex: 1,
@@ -363,5 +381,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-    }
+    },
 });

@@ -1,46 +1,44 @@
 import * as React from 'react';
-import {
-    StyleSheet,
-    View,
-    ImageBackground,
-} from 'react-native';
+import { StyleSheet, View, ImageBackground } from 'react-native';
 import { ChangeEvent, useContext, useState } from 'react';
 import { config } from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
 import { Input, Button } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import { ClientContext } from '../../context/client.context';
 import { Loader } from '../../components/Loader/Loader';
+import { AuthService } from '../../APIServices/authService';
+import Toast from 'react-native-tiny-toast';
+import { ErrorToast } from '../../components/Toast/Toast';
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const context = useContext(ClientContext);
-    const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
 
     const loginHandler = async () => {
         const form = { email, password };
         try {
             setLoading(true);
-            const response = await fetch(config.API_URL + '/api/auth/login', {
-                method: 'POST',
-                body: JSON.stringify(form),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            const data = await AuthService.loginUser(form, {
+                'Content-Type': 'application/json',
             });
-            const data = await response.json();
-            await context.loginUser(
-                data.token,
-                data.userId,
-                data.status,
-                data.email,
-            );
-            navigation.goBack();
             setLoading(false);
+            if (!data.token) {
+                Toast.show(data.message, ErrorToast);
+            } else {
+                await context.loginUser(
+                    data.token,
+                    data.userId,
+                    data.status,
+                    data.email,
+                );
+                navigation.dispatch(StackActions.popToTop());
+            }
         } catch (e) {
-            console.log(e);
+            console.log(e.message);
+            Toast.show('Something went wrong', ErrorToast);
         }
     };
 

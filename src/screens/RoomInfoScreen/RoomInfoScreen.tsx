@@ -7,18 +7,43 @@ import {
     ImageBackground,
     SafeAreaView,
     ScrollView,
+    TextInput,
+    TouchableWithoutFeedback,
+    Keyboard,
+    KeyboardAvoidingView,
 } from 'react-native';
-import { useNavigationState } from '@react-navigation/native';
-import { useContext, useEffect, useState } from 'react';
+import { useNavigationState, StackActions } from '@react-navigation/native';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from '../../context/client.context';
 import { config } from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
-import { Input, Button } from 'react-native-elements';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DatePicker from 'react-native-datepicker';
+import { Data, Order } from '../../interfaces/clientInterfaces';
+import Toast from 'react-native-tiny-toast';
+import { ErrorToast, SuccessToast } from '../../components/Toast/Toast';
+import { OrderService } from '../../APIServices/orderService';
 
-import Constants from 'expo-constants';
+const DismissKeyboard = ({ children }) => {
+    return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            {children}
+        </TouchableWithoutFeedback>
+    );
+};
 
-export const RoomInfoScreen = () => {
-    const [roomId, setRoomId] = useState('');
+export const RoomInfoScreen = ({ navigation }) => {
+    const context = useContext(ClientContext);
+    const [roomId, setRoomId] = useState<string>('');
+    const [order, setOrder] = useState<Order>({
+        category: '',
+        checkIn: '',
+        checkOut: '',
+        comment: '',
+        guests: '',
+        price: 0,
+        userEmail: context.userEmail,
+    });
     const navigationState = useNavigationState(state => state.routes);
 
     const checkParams = () => {
@@ -26,12 +51,111 @@ export const RoomInfoScreen = () => {
             return params !== undefined ? params['roomId'] : params;
         });
         setRoomId(paramObj[0].params['roomId']);
-        console.log(roomId);
     };
 
     const roomInfo = useContext(ClientContext).fetchedAllRooms.filter(room => {
         return room._id === roomId;
     });
+
+    const addOrderHandler = async (): Promise<void> => {
+        if (order.checkIn > order.checkOut) {
+            Toast.show('Incorrect Date, please try again', ErrorToast);
+            return;
+        }
+        const data: Data = await OrderService.postOrder(
+            { ...order },
+            {
+                Authorization: `Bearer ${context.token}`,
+                'Content-Type': 'application/json',
+            },
+        );
+        order.checkIn = '';
+        order.checkOut = '';
+        order.guests = 1;
+        order.comment = '';
+        console.log(data);
+        if (!data.ordercarts) {
+            Toast.show(data.message, ErrorToast);
+        } else {
+            StackActions.popToTop();
+            navigation.jumpTo('Profile');
+            Toast.showSuccess(data.message, SuccessToast);
+        }
+        if (!context.isAuthenticated) {
+            Toast.showSuccess('Need to authorize', SuccessToast);
+        }
+    };
+
+    const checkInPicker = (
+        <DatePicker
+            style={{ width: 300 }}
+            date={order.checkIn}
+            mode="date"
+            placeholder="Check In"
+            format="YYYY-MM-DD"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+                dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                },
+                dateInput: {
+                    marginLeft: 36,
+                    borderRadius: 20,
+                },
+                dateText: {
+                    color: '#000',
+                    justifyContent: 'flex-start',
+                },
+                datePicker: {
+                    backgroundColor: '#000',
+                },
+            }}
+            onDateChange={date =>
+                setOrder({
+                    ...order,
+                    checkIn: date,
+                    category: roomInfo[0].category,
+                    price: roomInfo[0].price,
+                })
+            }
+        />
+    );
+
+    const checkOutPicker = (
+        <DatePicker
+            style={{ width: 300 }}
+            date={order.checkOut}
+            mode="date"
+            placeholder="Check Out"
+            format="YYYY-MM-DD"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+                dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                },
+                dateInput: {
+                    marginLeft: 36,
+                    borderRadius: 20,
+                },
+                dateText: {
+                    color: '#000',
+                    justifyContent: 'flex-start',
+                },
+                datePicker: {
+                    backgroundColor: '#000',
+                },
+            }}
+            onDateChange={date => setOrder({ ...order, checkOut: date })}
+        />
+    );
 
     useEffect(() => {
         checkParams();
@@ -39,96 +163,164 @@ export const RoomInfoScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <View style={styles.wrapper}>
-                    <View style={styles.imageWrapper}>
-                        <ImageBackground
-                            style={styles.image}
-                            source={
-                                roomInfo[0]
-                                    ? {
-                                          uri:
-                                              config.API_URL +
-                                              '/static/' +
-                                              roomInfo[0].image,
-                                      }
-                                    : null
-                            }
-                        >
-                            <Text style={styles.roomTitle}>
-                                {roomInfo[0] ? roomInfo[0].title : null}
-                            </Text>
-                        </ImageBackground>
-                    </View>
-                    <View style={styles.roomCardWrapper}>
-                        <View style={styles.featuresWrapper}>
-                            <View style={styles.featuresItem}>
-                                <Ionicons
-                                    name={'ios-cash'}
-                                    color={'#000'}
-                                    size={20}
-                                />
-                                <Text style={styles.featuresItemText}>
-                                    Price:{' '}
-                                    {roomInfo[0] ? roomInfo[0].price : null}$
+            <DismissKeyboard>
+                <ScrollView>
+                    <KeyboardAwareScrollView
+                        resetScrollToCoords={{ x: 0, y: 0 }}
+                        contentContainerStyle={styles.wrapper}
+                        scrollEnabled={false}
+                    >
+                        <View style={styles.imageWrapper}>
+                            <ImageBackground
+                                style={styles.image}
+                                source={
+                                    roomInfo[0]
+                                        ? {
+                                              uri:
+                                                  config.API_URL +
+                                                  '/static/' +
+                                                  roomInfo[0].image,
+                                          }
+                                        : null
+                                }
+                            >
+                                <Text style={styles.roomTitle}>
+                                    {roomInfo[0] ? roomInfo[0].title : null}
+                                </Text>
+                            </ImageBackground>
+                        </View>
+                        <View style={styles.roomCardWrapper}>
+                            <View style={styles.featuresWrapper}>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
+                                        name={'ios-cash'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Price:{' '}
+                                        {roomInfo[0] ? roomInfo[0].price : null}
+                                        $
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
+                                        name={'ios-person'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Guests:{' '}
+                                        {roomInfo[0]
+                                            ? roomInfo[0].guests
+                                            : null}
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
+                                        name={'ios-business'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Area:{' '}
+                                        {roomInfo[0] ? roomInfo[0].area : null}{' '}
+                                        m2
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
+                                        name={'ios-pricetag'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Rooms:{' '}
+                                        {roomInfo[0] ? roomInfo[0].rooms : null}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={styles.descriptionWrapper}>
+                                <Text style={styles.descriptionTitle}>
+                                    Description
+                                </Text>
+                                <Text>
+                                    {roomInfo[0]
+                                        ? roomInfo[0].description
+                                        : null}
                                 </Text>
                             </View>
-                            <View style={styles.featuresItem}>
-                                <Ionicons
-                                    name={'ios-person'}
-                                    color={'#000'}
-                                    size={20}
-                                />
-                                <Text style={styles.featuresItemText}>
-                                    Guests:{' '}
-                                    {roomInfo[0] ? roomInfo[0].guests : null}
+                            <View style={styles.bookForm}>
+                                <Text style={styles.bookFormTitle}>
+                                    Make your reservation
                                 </Text>
-                            </View>
-                            <View style={styles.featuresItem}>
-                                <Ionicons
-                                    name={'ios-business'}
-                                    color={'#000'}
-                                    size={20}
-                                />
-                                <Text style={styles.featuresItemText}>
-                                    Area:{' '}
-                                    {roomInfo[0] ? roomInfo[0].area : null} m2
-                                </Text>
-                            </View>
-                            <View style={styles.featuresItem}>
-                                <Ionicons
-                                    name={'ios-pricetag'}
-                                    color={'#000'}
-                                    size={20}
-                                />
-                                <Text style={styles.featuresItemText}>
-                                    Rooms:{' '}
-                                    {roomInfo[0] ? roomInfo[0].rooms : null}
-                                </Text>
+                                <View style={styles.bookFormItem}>
+                                    {checkInPicker}
+                                </View>
+                                <View style={styles.bookFormItem}>
+                                    {checkOutPicker}
+                                </View>
+                                <View style={styles.bookFormItem}>
+                                    <View style={styles.bookFormInputWrapper}>
+                                        <Ionicons
+                                            name={'ios-person'}
+                                            size={26}
+                                            color={'#000'}
+                                        />
+                                        <TextInput
+                                            style={styles.bookFormInput}
+                                            placeholder={'Guests'}
+                                            keyboardType={'number-pad'}
+                                            value={String(order.guests)}
+                                            onChangeText={text =>
+                                                setOrder({
+                                                    ...order,
+                                                    guests: Number(text),
+                                                })
+                                            }
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styles.bookFormItem}>
+                                    <View style={styles.bookFormInputWrapper}>
+                                        <Ionicons
+                                            name={'ios-clipboard'}
+                                            size={26}
+                                            color={'#000'}
+                                        />
+                                        <TextInput
+                                            style={styles.bookFormInput}
+                                            placeholder={'Comment'}
+                                            value={order.comment}
+                                            onChangeText={text =>
+                                                setOrder({
+                                                    ...order,
+                                                    comment: text,
+                                                })
+                                            }
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styles.bookFormInputWrapper}>
+                                    <Ionicons
+                                        name={'ios-send'}
+                                        size={26}
+                                        color={'#000'}
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.bookFormButton}
+                                        onPress={addOrderHandler}
+                                    >
+                                        <Text style={styles.bookFormButtonText}>
+                                            Book Room
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                        <View style={styles.descriptionWrapper}>
-                            <Text style={styles.descriptionTitle}>
-                                Description
-                            </Text>
-                            <Text>
-                                {roomInfo[0] ? roomInfo[0].description : null}
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipisicing elit. Amet atque corporis cupiditate
-                                enim facilis officia officiis possimus, quos,
-                                repudiandae, tempora ullam unde? Atque,
-                                consectetur consequatur cum deserunt dolores ea
-                            </Text>
-                        </View>
-                        <View style={styles.bookForm}>
-                            <Input placeholder={'checkIn'}/>
-                            <Input placeholder={'checkIn'}/>
-                            <Input placeholder={'checkIn'}/>
-                            <Button title={'book'}/>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
+                    </KeyboardAwareScrollView>
+                </ScrollView>
+            </DismissKeyboard>
         </SafeAreaView>
     );
 };
@@ -144,7 +336,6 @@ const styles = StyleSheet.create({
     },
     wrapper: {
         flex: 3,
-
     },
     image: {
         width: '100%',
@@ -175,7 +366,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10
+        marginBottom: 10,
     },
     featuresItemText: {
         fontSize: 15,
@@ -191,6 +382,55 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     bookForm: {
-        flex: 1
-    }
+        flex: 1,
+        borderWidth: 1,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        marginVertical: 20,
+        elevation: 5,
+        borderRadius: 20,
+    },
+    bookFormTitle: {
+        fontSize: 20,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    bookFormItem: {
+        marginBottom: 20,
+        width: 300,
+    },
+    bookFormInput: {
+        borderWidth: 1,
+        borderColor: '#aaa',
+        borderRadius: 20,
+        padding: 11,
+        width: 263,
+        marginLeft: 15,
+        textAlign: 'center',
+    },
+    bookFormInputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 3,
+    },
+    bookFormButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 11,
+        borderWidth: 1,
+        borderRadius: 20,
+        width: 265,
+        marginLeft: 15,
+        backgroundColor: '#000',
+    },
+    bookFormButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        marginLeft: 15,
+        width: 200,
+        textAlign: 'center',
+    },
 });

@@ -73,7 +73,6 @@ export const RoomInfoScreen = ({ navigation }) => {
         order.checkOut = '';
         order.guests = 1;
         order.comment = '';
-        console.log(data);
         if (!data.ordercarts) {
             Toast.show(data.message, ErrorToast);
         } else {

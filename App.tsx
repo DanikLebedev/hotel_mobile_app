@@ -8,12 +8,14 @@ import {
     Article,
     Category,
     Customer,
+    OrderCart,
     Room,
 } from './src/interfaces/clientInterfaces';
 import { RoomService } from './src/APIServices/roomService';
 import { ArticleService } from './src/APIServices/articleService';
 import { CategoryService } from './src/APIServices/categoryService';
 import { CustomerService } from './src/APIServices/customerService';
+import { OrderService } from './src/APIServices/orderService';
 
 export default function App() {
     const {
@@ -30,6 +32,14 @@ export default function App() {
     const [fetchedAllCategories, setFetchedAllCategories] = useState<
         Category[]
     >([]);
+    const [orderHistory, setOrderHistory] = useState<OrderCart[]>([]);
+
+    const fetchOrdersHistory: CallableFunction = useCallback(() => {
+        OrderService.getOrdersHistory({
+            Authorization: `Bearer ${token}`,
+        }).then(({ ordercarts }) => setOrderHistory(ordercarts));
+    }, [token]);
+
     const [fetchedUserInfo, setFetchedUserInfo] = useState<Customer>({
         email: '',
         lastName: '',
@@ -68,7 +78,13 @@ export default function App() {
         fetchAllArticles();
         fetchAllCategories();
         fetchCustomerInfo();
-    }, [fetchAllRooms, fetchAllArticles, fetchAllCategories]);
+        fetchOrdersHistory();
+    }, [
+        fetchAllRooms,
+        fetchAllArticles,
+        fetchAllCategories,
+        fetchOrdersHistory,
+    ]);
 
     return (
         <ClientContext.Provider
@@ -84,6 +100,7 @@ export default function App() {
                 fetchedAllArticles,
                 fetchedAllCategories,
                 fetchedUserInfo,
+                orderHistory,
             }}
         >
             <StatusBar barStyle={'light-content'} />

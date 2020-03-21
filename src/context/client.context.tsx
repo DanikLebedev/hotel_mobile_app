@@ -3,6 +3,7 @@ import {
     Article,
     Category,
     Customer,
+    OrderCart,
     Room,
 } from '../interfaces/clientInterfaces';
 
@@ -18,6 +19,7 @@ export interface ClientContext {
     fetchedAllArticles: Article[];
     fetchedAllCategories: Category[];
     fetchedUserInfo: Customer;
+    orderHistory: OrderCart[];
 }
 
 function noop() {}
@@ -53,4 +55,19 @@ export const ClientContext = createContext<ClientContext>({
         order: [],
         password: '',
     },
+    orderHistory: [
+        {
+            orderId: '',
+            status: '',
+            userEmail: '',
+            category: '',
+            checkOut: '',
+            checkIn: '',
+            _id: '',
+            comment: '',
+            guests: 0,
+            userId: '',
+            price: 0,
+        },
+    ],
 });

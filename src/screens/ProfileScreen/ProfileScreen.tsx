@@ -15,6 +15,7 @@ import { RegisterScreen } from '../RegisterScreen/RegisterScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { Customer } from '../../interfaces/clientInterfaces';
 import { CustomerService } from '../../APIServices/customerService';
+import { OrderHistoryScreen } from '../OrderHistoryScreen/OrderHistoryScreen';
 
 const ProfileScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
@@ -39,7 +40,7 @@ const ProfileScreenBody = ({ navigation }) => {
             <View style={styles.body}>
                 <View style={styles.item}>
                     <View style={styles.infoContent}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('History')}>
                             <Text style={styles.info}>
                                 <Ionicons
                                     name={'ios-albums'}
@@ -61,22 +62,6 @@ const ProfileScreenBody = ({ navigation }) => {
                                     color={'#fff'}
                                 />{' '}
                                 Send Feedback
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                <View style={styles.item}>
-                    <View style={styles.infoContent}>
-                        <TouchableOpacity>
-                            <Text style={styles.info}>
-                                {' '}
-                                <Ionicons
-                                    name={'ios-basket'}
-                                    size={26}
-                                    color={'#fff'}
-                                />{' '}
-                                Current Orders
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -185,6 +170,16 @@ export const ProfileScreen = () => {
             <ProfileStack.Screen
                 name={'Register'}
                 component={RegisterScreen}
+                options={{
+                    headerStyle: { backgroundColor: '#000' },
+                    headerTitleStyle: { color: '#fff' },
+                    headerBackTitleStyle: { color: '#fff' },
+                    headerTintColor: '#fff',
+                }}
+            />
+            <ProfileStack.Screen
+                name={'History'}
+                component={OrderHistoryScreen}
                 options={{
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },

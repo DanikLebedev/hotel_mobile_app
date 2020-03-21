@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { config } from '../../../config';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigationState, StackActions } from '@react-navigation/native';
 import { useContext, useEffect } from 'react';
 import { ClientContext } from '../../context/client.context';

@@ -1,10 +1,10 @@
-import { createContext } from 'react';
+import { createContext, Dispatch, SetStateAction } from 'react';
 import {
     Article,
     Category,
-    Customer,
+    Customer, Order,
     OrderCart,
-    Room,
+    Room
 } from '../interfaces/clientInterfaces';
 
 export interface ClientContext {

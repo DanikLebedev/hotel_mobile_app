@@ -30,6 +30,8 @@
         "react-native-anchor-carousel": "^3.1.2",
         "react-native-datepicker": "^1.7.2",
         "react-native-elements": "^1.2.7",
+        "react-native-expo-cached-image": "^1.0.1",
+        "react-native-fast-image": "^8.1.5",
         "react-native-gesture-handler": "~1.5.0",
         "react-native-keyboard-aware-scroll-view": "^0.9.1",
         "react-native-material-ui": "^1.30.1",

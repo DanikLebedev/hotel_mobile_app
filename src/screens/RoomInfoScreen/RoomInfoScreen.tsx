@@ -10,7 +10,6 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     Keyboard,
-    KeyboardAvoidingView,
 } from 'react-native';
 import { useNavigationState, StackActions } from '@react-navigation/native';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -42,7 +41,7 @@ export const RoomInfoScreen = ({ navigation }) => {
         comment: '',
         guests: '',
         price: 0,
-        userEmail: context.userEmail,
+        userEmail: context.fetchedUserInfo.email,
     });
     const navigationState = useNavigationState(state => state.routes);
 
@@ -77,7 +76,7 @@ export const RoomInfoScreen = ({ navigation }) => {
             Toast.show(data.message, ErrorToast);
         } else {
             StackActions.popToTop();
-            navigation.jumpTo('Profile');
+            navigation.jumpTo('Bookings');
             Toast.showSuccess(data.message, SuccessToast);
         }
         if (!context.isAuthenticated) {

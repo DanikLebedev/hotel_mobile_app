@@ -5,71 +5,97 @@ import { MoreScreenBody } from '../MoreScreen/MoreScreen';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from '../../context/client.context';
 import { OrderService } from '../../APIServices/orderService';
-import { OrderCart } from '../../interfaces/clientInterfaces';
+import { Customer, OrderCart } from '../../interfaces/clientInterfaces';
 import { Loader } from '../../components/Loader/Loader';
 import { OrderItem } from '../../components/OrderItem/OrderItem';
 import Toast from 'react-native-tiny-toast';
 import { ErrorToast, SuccessToast } from '../../components/Toast/Toast';
+import { CustomerService } from '../../APIServices/customerService';
 
-
-export const BookingsScreenBody = () => {
+export const BookingsScreenBody = ({navigation}) => {
     const context = useContext(ClientContext);
     const [orders, setOrders] = useState<OrderCart[]>(context.orderHistory);
+    const [userEmail, setUserEmail] = useState<string>(
+        context.fetchedUserInfo.email,
+    );
 
     const update = useCallback(() => {
         OrderService.getOrdersHistory({
             Authorization: `Bearer ${context.token}`,
-        }).then(({ ordercarts }) => setOrders(ordercarts));
+        }).then(({ ordercarts }) => {
+            setOrders(ordercarts)
+        });
+
+        CustomerService.getCustomer({
+            Authorization: `Bearer ${context.token}`,
+        }).then(customer => setUserEmail(customer.email));
     }, [context.token]);
 
-    const filteredUserOrders = () => {
-        if (orders) {
-            return orders.filter(order => {
-                return (
-                    order.userEmail === context.fetchedUserInfo.email && order.status === 'booked'
-                );
-            });
-        }
-    }
-    const onDelete =  async (id: string) => {
+
+
+    const onDelete = async (id: string) => {
         const filteredOrders = orders.filter(order => {
-            return order._id !== id
-        })
-        setOrders(filteredOrders)
+            return order._id !== id;
+        });
         try {
-            const data = await OrderService.deleteUserOrder(JSON.stringify({ _id: id }), {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${context.token}`,
-            });
+            const data = await OrderService.deleteUserOrder(
+                JSON.stringify({ _id: id }),
+                {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${context.token}`,
+                },
+            );
+            setOrders(filteredOrders)
             update();
             Toast.show(data.message, SuccessToast);
         } catch (e) {
             Toast.show('Something went wrong', ErrorToast);
         }
-    }
+    };
+
+
 
     useEffect(() => {
         update();
-    }, [update, context.orderHistory]);
+        navigation.addListener('focus', () => update())
+    }, [update, context.orderHistory, navigation]);
 
-    if(!context.orderHistory) {
-        return <Loader/>
+    if (!context.isAuthenticated || !context.orderHistory) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>
+                    Please log in, to see your orders
+                </Text>
+            </View>
+        );
     }
 
+    const filteredUserOrders = orders.filter(order => {
+        return order.userEmail === userEmail && order.status === 'booked';
+    });
 
     return (
         <View style={styles.container}>
-            {context.token? filteredUserOrders().length ? (  <FlatList
-                data={filteredUserOrders()}
-                renderItem={({item}) => {
-                    return (
-                        context.orderHistory[0] ?  ( <OrderItem order={item} key={item._id} onDelete={onDelete}/>) : <Loader/>
-                    )
-                }
-
-                }
-            />): (<Text>There no orders yet</Text>):<Text>Please log in, to see your orders</Text>}
-
+            {context.orderHistory[0] ? (
+                filteredUserOrders.length ? (
+                    <FlatList
+                        data={filteredUserOrders}
+                        renderItem={({ item }) => {
+                            return (
+                                <OrderItem
+                                    order={item}
+                                    key={item._id}
+                                    onDelete={onDelete}
+                                />
+                            );
+                        }}
+                    />
+                ) : (
+                    <Text style={styles.title}>There no orders yet</Text>
+                )
+            ) : (
+                <Loader />
+            )}
         </View>
     );
 };
@@ -95,5 +121,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 20,
     },
 });

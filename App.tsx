@@ -29,9 +29,7 @@ export default function App() {
     const isAuthenticated = !!token;
     const [fetchedAllRooms, setFetchedAllRooms] = useState<Room[]>([]);
     const [fetchedAllArticles, setFetchedAllArticles] = useState<Article[]>([]);
-    const [fetchedAllCategories, setFetchedAllCategories] = useState<
-        Category[]
-    >([]);
+    const [fetchedAllCategories, setFetchedAllCategories] = useState<Category[]>([]);
     const [orderHistory, setOrderHistory] = useState<OrderCart[]>([]);
 
     const fetchOrdersHistory: CallableFunction = useCallback(() => {
@@ -84,6 +82,7 @@ export default function App() {
         fetchAllArticles,
         fetchAllCategories,
         fetchOrdersHistory,
+        fetchCustomerInfo,
     ]);
 
     return (

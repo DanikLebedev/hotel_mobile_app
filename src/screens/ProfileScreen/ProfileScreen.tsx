@@ -40,7 +40,9 @@ const ProfileScreenBody = ({ navigation }) => {
             <View style={styles.body}>
                 <View style={styles.item}>
                     <View style={styles.infoContent}>
-                        <TouchableOpacity onPress={() => navigation.navigate('History')}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('History')}
+                        >
                             <Text style={styles.info}>
                                 <Ionicons
                                     name={'ios-albums'}

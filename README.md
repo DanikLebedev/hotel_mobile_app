@@ -11,11 +11,11 @@ This application fully clones functionality of the [web version on React](https:
 ## Preview
 
 #### Navigation: I used [createMaterialBottomTabNavigator](https://reactnavigation.org/docs/material-bottom-tab-navigator/)
-![Navigation](navigation.gif = 250x250)
+![Navigation](https://drive.google.com/open?id=1g3BYWxJaArEmjxIB5zC9xlV02V_sPYYf)
 
 
 #### Room's list
-![Rooms list](bookRoom.gif = 250x250)
+![Rooms list](https://drive.google.com/open?id=1knlg1XddmRLXRSr81Pr3lOl2RORERkdZ)
 
 #### Create order
-![Order form](bookForm.gif = 250x250)
+![Book form](https://drive.google.com/open?id=1acebdCbN61P9GArPK4cLZi3iVEdfL_oR)

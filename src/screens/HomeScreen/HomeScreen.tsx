@@ -284,6 +284,7 @@ export const HomeScreen = () => {
                 name={'RoomInfo'}
                 component={RoomInfoScreen}
                 options={{
+                    headerTitle: props => <RoomInfoLogoTitle {...props} />,
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },

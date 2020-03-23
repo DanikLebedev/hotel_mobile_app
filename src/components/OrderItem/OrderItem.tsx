@@ -86,7 +86,10 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                     <Text style={styles.modalBodyTitle}>Actions</Text>
                     <View style={styles.modalButtonWrapper}>
                         <TouchableOpacity
-                            onPress={id => props.onDelete(props.order._id)}
+                            onPress={id => {
+                                props.onDelete(props.order._id)
+                                toggleShowModal()
+                            }}
                         >
                             <Text style={styles.deleteButton}>
                                 Delete order

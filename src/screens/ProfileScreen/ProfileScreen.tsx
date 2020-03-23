@@ -6,6 +6,7 @@ import {
     Animated,
     Image,
     TouchableOpacity,
+    TextInput,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../LoginScreen/LoginScreen';
@@ -13,14 +14,40 @@ import { ClientContext } from '../../context/client.context';
 import { Button } from 'react-native-elements';
 import { RegisterScreen } from '../RegisterScreen/RegisterScreen';
 import { Ionicons } from '@expo/vector-icons';
-import { Customer } from '../../interfaces/clientInterfaces';
+import { Customer, Feedback } from '../../interfaces/clientInterfaces';
 import { CustomerService } from '../../APIServices/customerService';
 import { OrderHistoryScreen } from '../OrderHistoryScreen/OrderHistoryScreen';
+import Modal from 'react-native-modal';
+import { FeedbackService } from '../../APIServices/feedbackService';
+import Toast from 'react-native-tiny-toast';
+import { SuccessToast } from '../../components/Toast/Toast';
+
 
 const ProfileScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [userInfo, setUserInfo] = useState<Customer>(context.fetchedUserInfo);
+    const [showModal, setShowModal] = useState(false);
+    const [feedback, setFeedback] = useState<Feedback>({
+        approved: false,
+        message: "",
+        userEmail: context.fetchedUserInfo.email,
+        userLastName: context.fetchedUserInfo.lastName,
+        userName: context.fetchedUserInfo.name
+    })
+
+    const toggleShowModal = () => {
+        setShowModal(!showModal);
+    };
+
+    const addFeedbackHandler = async (): Promise<void> => {
+        const data = await FeedbackService.postFeedback(
+            {...feedback},
+            { Authorization: `Bearer ${context.token}`, 'Content-Type': 'application/json' },
+        );
+        Toast.show(data.message, SuccessToast);
+        toggleShowModal();
+    };
 
     const registerLayout = (
         <View style={styles.container}>
@@ -56,7 +83,7 @@ const ProfileScreenBody = ({ navigation }) => {
                 </View>
                 <View style={styles.item}>
                     <View style={styles.infoContent}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={toggleShowModal}>
                             <Text style={styles.info}>
                                 <Ionicons
                                     name={'ios-send'}
@@ -84,6 +111,26 @@ const ProfileScreenBody = ({ navigation }) => {
                     </View>
                 </View>
             </View>
+            <Modal isVisible={showModal} onBackdropPress={toggleShowModal}>
+                <View style={styles.modalBody}>
+                    <Text style={styles.modalTitle}>Leave feedback</Text>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={4}
+                        style={styles.feedbackInput}
+                        placeholder={'your feedback...'}
+                        placeholderTextColor={'#cdcdcd'}
+                        onChangeText={(text) => setFeedback({...feedback, message: text})}
+                    />
+                    <Button
+                        title={'Send Feedback  '}
+                        onPress={addFeedbackHandler}
+                        buttonStyle={styles.unregisterButton}
+                        iconRight={true}
+                        icon={ <Ionicons name={'ios-send'} color={'#fff'} size={26}/>}
+                    />
+                </View>
+            </Modal>
         </View>
     );
 
@@ -199,6 +246,24 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
         height: '100%',
+    },
+    modalBody: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#fff',
+    },
+    feedbackInput: {
+        padding: 30,
+        borderWidth: 1,
+        borderColor: '#cdcdcd',
+        width: '100%',
+        height: 150,
+        marginVertical: 20
+    },
+    modalTitle: {
+        textAlign: 'center',
+        fontSize: 18,
     },
     unregisterWrapper: {
         flex: 1,

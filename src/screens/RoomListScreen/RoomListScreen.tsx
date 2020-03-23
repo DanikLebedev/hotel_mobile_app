@@ -29,7 +29,7 @@ export const RoomListScreen = ({ navigation }) => {
                                     })
                                 }
                             >
-                                <RoomListItem room={item} />
+                                <RoomListItem key={index} room={item} />
                             </TouchableOpacity>
                         );
                     }}

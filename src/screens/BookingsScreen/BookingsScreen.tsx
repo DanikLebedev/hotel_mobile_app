@@ -12,7 +12,7 @@ import Toast from 'react-native-tiny-toast';
 import { ErrorToast, SuccessToast } from '../../components/Toast/Toast';
 import { CustomerService } from '../../APIServices/customerService';
 
-export const BookingsScreenBody = ({navigation}) => {
+export const BookingsScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [orders, setOrders] = useState<OrderCart[]>(context.orderHistory);
     const [userEmail, setUserEmail] = useState<string>(
@@ -20,18 +20,18 @@ export const BookingsScreenBody = ({navigation}) => {
     );
 
     const update = useCallback(() => {
-        OrderService.getOrdersHistory({
-            Authorization: `Bearer ${context.token}`,
-        }).then(({ ordercarts }) => {
-            setOrders(ordercarts)
-        });
+        if (context.isAuthenticated) {
+            OrderService.getOrdersHistory({
+                Authorization: `Bearer ${context.token}`,
+            }).then(({ ordercarts }) => {
+                setOrders(ordercarts);
+            });
 
-        CustomerService.getCustomer({
-            Authorization: `Bearer ${context.token}`,
-        }).then(customer => setUserEmail(customer.email));
-    }, [context.token]);
-
-
+            CustomerService.getCustomer({
+                Authorization: `Bearer ${context.token}`,
+            }).then(customer => setUserEmail(customer.email));
+        }
+    }, [context.token, context.isAuthenticated]);
 
     const onDelete = async (id: string) => {
         const filteredOrders = orders.filter(order => {
@@ -45,19 +45,18 @@ export const BookingsScreenBody = ({navigation}) => {
                     Authorization: `Bearer ${context.token}`,
                 },
             );
-            setOrders(filteredOrders)
+            setOrders(filteredOrders);
             update();
             Toast.show(data.message, SuccessToast);
+
         } catch (e) {
             Toast.show('Something went wrong', ErrorToast);
         }
     };
 
-
-
     useEffect(() => {
         update();
-        navigation.addListener('focus', () => update())
+        navigation.addListener('focus', () => update());
     }, [update, context.orderHistory, navigation]);
 
     if (!context.isAuthenticated || !context.orderHistory) {

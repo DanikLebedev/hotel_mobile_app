@@ -1,17 +1,18 @@
 import { CRUDServices } from './CRUDServices';
 import { Data, Feedbacks } from '../interfaces/clientInterfaces';
+import { config } from '../../config';
 
 export class FeedbackService {
     public static async getAllFeedbacks(): Promise<Feedbacks> {
         const rooms: Feedbacks = await CRUDServices.getData(
-            '/api/admin/feedbacks',
+            config.API_URL + '/api/admin/feedbacks',
         );
         return rooms;
     }
 
     public static async postFeedback(body: {}, headers?: {}): Promise<Data> {
         const response: Data = await CRUDServices.postData(
-            '/api/client/feedback/add',
+            config.API_URL + '/api/client/feedback/add',
             body,
             headers,
         );

@@ -9,7 +9,7 @@
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "splash": {
-            "image": "./assets/splash.png",
+            "image": "./assets/Rixos_Hotels_logo_logotype.png",
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },

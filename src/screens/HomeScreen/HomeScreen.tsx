@@ -88,6 +88,7 @@ const HomeScreenBody = ({ navigation }) => {
             placeholder="Check In"
             format="YYYY-MM-DD"
             confirmBtnText="Confirm"
+
             cancelBtnText="Cancel"
             customStyles={{
                 dateIcon: {
@@ -252,7 +253,7 @@ const RoomInfoLogoTitle = props => {
     return (
         <View style={styles.searchHeader}>
             <Ionicons name={'ios-search'} color={'#fff'} size={26} />
-            <Text style={styles.headerTitle}>Results</Text>
+            <Text style={styles.headerTitle}>Details</Text>
         </View>
     );
 };

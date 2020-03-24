@@ -61,11 +61,7 @@ export const LoginScreen = ({ navigation }) => {
     }
 
     return (
-        <ImageBackground
-            blurRadius={5}
-            source={require('../../../assets/loginScreen.jpg')}
-            style={styles.backgroundImage}
-        >
+        <View style={styles.backgroundImage}>
             <DismissKeyboard>
                 <View style={styles.container}>
                     <View style={styles.loginWrapper}>
@@ -74,7 +70,7 @@ export const LoginScreen = ({ navigation }) => {
                                 leftIcon={
                                     <Ionicons
                                         name="ios-mail"
-                                        color={'#fff'}
+                                        color={'#000'}
                                         size={26}
                                     />
                                 }
@@ -92,7 +88,7 @@ export const LoginScreen = ({ navigation }) => {
                                 leftIcon={
                                     <Ionicons
                                         name="ios-lock"
-                                        color={'#fff'}
+                                        color={'#000'}
                                         size={26}
                                     />
                                 }
@@ -110,20 +106,20 @@ export const LoginScreen = ({ navigation }) => {
                             icon={
                                 <Ionicons
                                     name={'ios-log-in'}
-                                    color={'#000'}
+                                    color={'#fff'}
                                     size={26}
                                 />
                             }
                             raised
                             title={'Login  '}
-                            titleStyle={{ color: '#000' }}
+                            titleStyle={{ color: '#fff' }}
                             onPress={loginHandler}
                             buttonStyle={styles.unregisterButton}
                         />
                     </View>
                 </View>
             </DismissKeyboard>
-        </ImageBackground>
+        </View>
     );
 };
 
@@ -145,17 +141,14 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         marginLeft: 10,
-        color: '#fff',
+        color: '#000',
     },
     unregisterButton: {
         width: 200,
-        backgroundColor: '#fff',
+        backgroundColor: '#000',
     },
     backgroundImage: {
         flex: 1,
-        width: null,
-        height: null,
-        resizeMode: 'cover',
-        backgroundColor: '#000',
+        backgroundColor: '#cdcdcd',
     },
 });

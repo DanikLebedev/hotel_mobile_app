@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    FlatList,
+    RefreshControl,
+} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MoreScreenBody } from '../MoreScreen/MoreScreen';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from '../../context/client.context';
 import { OrderService } from '../../APIServices/orderService';
@@ -18,13 +24,17 @@ export const BookingsScreenBody = ({ navigation }) => {
     const [userEmail, setUserEmail] = useState<string>(
         context.fetchedUserInfo.email,
     );
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const update = useCallback(() => {
         if (context.isAuthenticated) {
+            setRefreshing(true);
             OrderService.getOrdersHistory({
                 Authorization: `Bearer ${context.token}`,
             }).then(({ ordercarts }) => {
                 setOrders(ordercarts);
+                setRefreshing(false);
             });
 
             CustomerService.getCustomer({
@@ -48,16 +58,22 @@ export const BookingsScreenBody = ({ navigation }) => {
             setOrders(filteredOrders);
             update();
             Toast.show(data.message, SuccessToast);
-
         } catch (e) {
             Toast.show('Something went wrong', ErrorToast);
         }
     };
 
     useEffect(() => {
-        update();
-        navigation.addListener('focus', () => update());
-    }, [update, context.orderHistory, navigation]);
+        navigation.addListener('focus', () => {
+            setLoading(true)
+            update()
+            setLoading(false)
+        });
+    }, [context.orderHistory, navigation]);
+
+    if(loading) {
+        return <Loader/>
+    }
 
     if (!context.isAuthenticated || !context.orderHistory) {
         return (
@@ -79,6 +95,12 @@ export const BookingsScreenBody = ({ navigation }) => {
                 filteredUserOrders.length ? (
                     <FlatList
                         data={filteredUserOrders}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={update}
+                            />
+                        }
                         renderItem={({ item }) => {
                             return (
                                 <OrderItem
@@ -120,6 +142,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
+        backgroundColor: '#cdcdcd'
     },
     title: {
         textAlign: 'center',

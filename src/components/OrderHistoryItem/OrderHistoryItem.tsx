@@ -32,7 +32,7 @@ export const OrderHistoryItem: React.FC<OrderHistoryItem> = (
                     {new Date(props.order.checkOut).toLocaleDateString()}
                 </Text>
                 <Text style={styles.orderHistoryField}>
-                    Price: {props.order.price}
+                    Price: {props.order.price}$
                 </Text>
             </View>
             <View>

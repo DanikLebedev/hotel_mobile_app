@@ -1,49 +1,61 @@
 import * as React from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
+import { StyleSheet, View, TextInput, Text, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { ChangeEvent, useContext, useState } from 'react';
-import { config } from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
 import { Input, Button } from 'react-native-elements';
-import { useAuth } from '../../hooks/deviceStorage';
-import { useNavigation } from '@react-navigation/native';
 import { ClientContext } from '../../context/client.context';
+import { UserData } from '../../interfaces/clientInterfaces';
+import { AuthService } from '../../APIServices/authService';
+import Toast from 'react-native-tiny-toast';
+import { SuccessToast } from '../../components/Toast/Toast';
+import { Loader } from '../../components/Loader/Loader';
 
-export const RegisterScreen = () => {
+const DismissKeyboard = ({ children }) => {
+    return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            {children}
+        </TouchableWithoutFeedback>
+    );
+};
+
+export const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [loading, setLoading] = useState(false);
     const context = useContext(ClientContext);
-    const navigation = useNavigation();
 
     const registerHandler = async () => {
         const form = { email, password, name, lastName };
         try {
-            const response = await fetch(
-                config.API_URL + '/api/auth/register',
-                {
-                    method: 'POST',
-                    body: JSON.stringify(form),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                },
+            setLoading(true);
+            const data: UserData = await AuthService.registerUser(form, {
+                'Content-Type': 'application/json',
+            });
+            const loginData: UserData = await AuthService.loginUser(form, {
+                'Content-Type': 'application/json',
+            });
+            setLoading(false);
+            Toast.showSuccess(data.message, SuccessToast);
+            context.loginUser(
+                loginData.token,
+                loginData.userId,
+                loginData.status,
+                loginData.email,
             );
-            const data = await response.json();
-            console.log(data);
-            await context.loginUser(
-                data.token,
-                data.userId,
-                data.status,
-                data.email,
-            );
-            navigation.goBack();
+            navigation.popToTop();
         } catch (e) {
             console.log(e);
         }
     };
 
+    if (loading) {
+        return <Loader />;
+    }
+
     return (
+      <DismissKeyboard>
         <View style={styles.container}>
             <View style={styles.loginWrapper}>
                 <View style={styles.inputWrapper}>
@@ -53,6 +65,7 @@ export const RegisterScreen = () => {
                         keyboardType={'email-address'}
                         textContentType="emailAddress"
                         onChangeText={text => setEmail(text)}
+                        placeholderTextColor={'#fff'}
                         placeholder={'email'}
                         inputStyle={styles.inputStyle}
                     />
@@ -64,6 +77,7 @@ export const RegisterScreen = () => {
                         onChangeText={text => setPassword(text)}
                         placeholder={'password'}
                         textContentType={'password'}
+                        placeholderTextColor={'#fff'}
                         inputStyle={styles.inputStyle}
                         secureTextEntry={true}
                     />
@@ -71,18 +85,20 @@ export const RegisterScreen = () => {
                 <View style={styles.inputWrapper}>
                     <Input
                         leftIcon={<Ionicons name="ios-person" size={26} />}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
+                        value={name}
+                        onChangeText={text => setName(text)}
                         placeholder={'first name'}
+                        placeholderTextColor={'#fff'}
                         inputStyle={styles.inputStyle}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
                     <Input
                         leftIcon={<Ionicons name="ios-person" size={26} />}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
+                        value={lastName}
+                        onChangeText={text => setLastName(text)}
                         placeholder={'last name'}
+                        placeholderTextColor={'#fff'}
                         inputStyle={styles.inputStyle}
                     />
                 </View>
@@ -102,6 +118,7 @@ export const RegisterScreen = () => {
                 />
             </View>
         </View>
+      </DismissKeyboard>
     );
 };
 
@@ -110,6 +127,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
+        backgroundColor: '#cdcdcd',
     },
     loginWrapper: {
         justifyContent: 'center',

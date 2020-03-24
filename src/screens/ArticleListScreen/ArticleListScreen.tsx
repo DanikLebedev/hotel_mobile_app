@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
     StyleSheet,
     FlatList,
+    RefreshControl,
 } from 'react-native';
 import { Card } from 'react-native-elements';
 import { ClientContext } from '../../context/client.context';
@@ -18,17 +19,30 @@ export const ArticleListScreen = ({ navigation }) => {
     const [articles, setArticles] = useState<Article[]>(
         context.fetchedAllArticles,
     );
+    const [refreshing, setRefreshing] = useState(false);
+
+    const update = useCallback(() => {
+        setRefreshing(true);
+        ArticleService.getAllArticles().then(({ article }) => {
+            setRefreshing(false);
+            setArticles(article);
+        });
+    }, []);
 
     useEffect(() => {
-        ArticleService.getAllArticles().then(({ article }) =>
-            setArticles(article),
-        );
-    }, []);
+        navigation.addListener('focus', () => update());
+    }, [update, context.fetchedAllArticles]);
 
     return (
         <View style={styles.container}>
             <FlatList
                 data={articles}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={update}
+                    />
+                }
                 renderItem={({ item }) => {
                     return (
                         <TouchableOpacity

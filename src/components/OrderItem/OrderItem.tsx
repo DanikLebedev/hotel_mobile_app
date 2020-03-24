@@ -23,11 +23,20 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                     <View style={styles.orderInfoItem}>
                         <Ionicons
                             size={26}
+                            name={'ios-business'}
+                            color={'#fff'}
+                        />
+                        <Text style={styles.orderInfoField}>
+                            Category: {props.order.category}
+                        </Text>
+                    </View>
+                    <View style={styles.orderInfoItem}>
+                        <Ionicons
+                            size={26}
                             name={'ios-calendar'}
                             color={'#fff'}
                         />
                         <Text style={styles.orderInfoField}>
-                            {' '}
                             Check In:{' '}
                             {new Date(props.order.checkIn).toLocaleDateString()}
                         </Text>
@@ -39,7 +48,6 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                             color={'#fff'}
                         />
                         <Text style={styles.orderInfoField}>
-                            {' '}
                             Check Out:{' '}
                             {new Date(
                                 props.order.checkOut,
@@ -65,7 +73,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                     <View style={styles.orderInfoItem}>
                         <Ionicons
                             size={26}
-                            name={'ios-calendar'}
+                            name={'ios-clipboard'}
                             color={'#fff'}
                         />
                         <Text style={styles.orderInfoField}>
@@ -87,8 +95,8 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                     <View style={styles.modalButtonWrapper}>
                         <TouchableOpacity
                             onPress={id => {
-                                props.onDelete(props.order._id)
-                                toggleShowModal()
+                                props.onDelete(props.order._id);
+                                toggleShowModal();
                             }}
                         >
                             <Text style={styles.deleteButton}>
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         fontSize: 16,
         justifyContent: 'center',
-        marginLeft: 15,
+        marginLeft: 20,
     },
     modalBody: {
         backgroundColor: '#fff',

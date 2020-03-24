@@ -22,7 +22,6 @@ import { FeedbackService } from '../../APIServices/feedbackService';
 import Toast from 'react-native-tiny-toast';
 import { SuccessToast } from '../../components/Toast/Toast';
 
-
 const ProfileScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [fadeAnim] = useState(new Animated.Value(0));
@@ -30,11 +29,11 @@ const ProfileScreenBody = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [feedback, setFeedback] = useState<Feedback>({
         approved: false,
-        message: "",
+        message: '',
         userEmail: context.fetchedUserInfo.email,
         userLastName: context.fetchedUserInfo.lastName,
-        userName: context.fetchedUserInfo.name
-    })
+        userName: context.fetchedUserInfo.name,
+    });
 
     const toggleShowModal = () => {
         setShowModal(!showModal);
@@ -42,8 +41,11 @@ const ProfileScreenBody = ({ navigation }) => {
 
     const addFeedbackHandler = async (): Promise<void> => {
         const data = await FeedbackService.postFeedback(
-            {...feedback},
-            { Authorization: `Bearer ${context.token}`, 'Content-Type': 'application/json' },
+            { ...feedback },
+            {
+                Authorization: `Bearer ${context.token}`,
+                'Content-Type': 'application/json',
+            },
         );
         Toast.show(data.message, SuccessToast);
         toggleShowModal();
@@ -120,14 +122,22 @@ const ProfileScreenBody = ({ navigation }) => {
                         style={styles.feedbackInput}
                         placeholder={'your feedback...'}
                         placeholderTextColor={'#cdcdcd'}
-                        onChangeText={(text) => setFeedback({...feedback, message: text})}
+                        onChangeText={text =>
+                            setFeedback({ ...feedback, message: text })
+                        }
                     />
                     <Button
                         title={'Send Feedback  '}
                         onPress={addFeedbackHandler}
                         buttonStyle={styles.unregisterButton}
                         iconRight={true}
-                        icon={ <Ionicons name={'ios-send'} color={'#fff'} size={26}/>}
+                        icon={
+                            <Ionicons
+                                name={'ios-send'}
+                                color={'#fff'}
+                                size={26}
+                            />
+                        }
                     />
                 </View>
             </Modal>
@@ -259,7 +269,7 @@ const styles = StyleSheet.create({
         borderColor: '#cdcdcd',
         width: '100%',
         height: 150,
-        marginVertical: 20
+        marginVertical: 20,
     },
     modalTitle: {
         textAlign: 'center',
@@ -271,6 +281,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         textAlign: 'center',
         flexDirection: 'column',
+        backgroundColor: '#cdcdcd'
     },
     unregisterItem: {
         alignItems: 'center',

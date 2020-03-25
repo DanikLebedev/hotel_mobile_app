@@ -88,7 +88,6 @@ const HomeScreenBody = ({ navigation }) => {
             placeholder="Check In"
             format="YYYY-MM-DD"
             confirmBtnText="Confirm"
-
             cancelBtnText="Cancel"
             customStyles={{
                 dateIcon: {

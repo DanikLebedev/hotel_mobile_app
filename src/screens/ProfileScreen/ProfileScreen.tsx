@@ -1,17 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useState,
+} from 'react';
 import {
     StyleSheet,
     Text,
     View,
     Animated,
-    Image,
     TouchableOpacity,
     TextInput,
+    FlatList,
+    ScrollView,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../LoginScreen/LoginScreen';
 import { ClientContext } from '../../context/client.context';
-import { Button } from 'react-native-elements';
+import { Button, Input, ListItem } from 'react-native-elements';
 import { RegisterScreen } from '../RegisterScreen/RegisterScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { Customer, Feedback } from '../../interfaces/clientInterfaces';
@@ -27,6 +34,7 @@ const ProfileScreenBody = ({ navigation }) => {
     const [fadeAnim] = useState(new Animated.Value(0));
     const [userInfo, setUserInfo] = useState<Customer>(context.fetchedUserInfo);
     const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [feedback, setFeedback] = useState<Feedback>({
         approved: false,
         message: '',
@@ -35,8 +43,18 @@ const ProfileScreenBody = ({ navigation }) => {
         userName: context.fetchedUserInfo.name,
     });
 
+    const update = useCallback(() => {
+        CustomerService.getCustomer({
+            Authorization: `Bearer ${context.token}`,
+        }).then(customer => setUserInfo(customer));
+    }, [context.token]);
+
     const toggleShowModal = () => {
         setShowModal(!showModal);
+    };
+
+    const toggleShowEditModal = () => {
+        setShowEditModal(!showEditModal);
     };
 
     const addFeedbackHandler = async (): Promise<void> => {
@@ -50,6 +68,37 @@ const ProfileScreenBody = ({ navigation }) => {
         Toast.show(data.message, SuccessToast);
         toggleShowModal();
     };
+
+    const updateUserInfo = async (): Promise<void> => {
+        const data = await CustomerService.updateCustomer(
+            JSON.stringify(userInfo),
+            {
+                Authorization: `Bearer ${context.token}`,
+                'Content-Type': 'application/json',
+            },
+        );
+        update();
+        Toast.show(data.message, SuccessToast);
+        toggleShowEditModal();
+    };
+
+    const menuList = [
+        {
+            title: 'History',
+            icon: 'ios-albums',
+            navigate: () => navigation.navigate('History'),
+        },
+        {
+            title: 'Send Feedback',
+            icon: 'ios-send',
+            navigate: () => toggleShowModal(),
+        },
+        {
+            title: 'Logout',
+            icon: 'ios-exit',
+            navigate: () => context.logoutUser(),
+        },
+    ];
 
     const registerLayout = (
         <View style={styles.container}>
@@ -67,51 +116,27 @@ const ProfileScreenBody = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.body}>
-                <View style={styles.item}>
-                    <View style={styles.infoContent}>
+                {menuList.map((item, i) => {
+                    return (
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('History')}
+                            key={i}
+                            onPress={() => item.navigate()}
                         >
-                            <Text style={styles.info}>
-                                <Ionicons
-                                    name={'ios-albums'}
-                                    size={26}
-                                    color={'#fff'}
-                                />{' '}
-                                History
-                            </Text>
+                            <ListItem
+                                title={item.title}
+                                containerStyle={{
+                                    backgroundColor: '#fff',
+                                    borderColor: '#000',
+                                }}
+                                leftIcon={
+                                    <Ionicons name={item.icon} size={26} />
+                                }
+                                bottomDivider={true}
+                                chevron={true}
+                            />
                         </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.item}>
-                    <View style={styles.infoContent}>
-                        <TouchableOpacity onPress={toggleShowModal}>
-                            <Text style={styles.info}>
-                                <Ionicons
-                                    name={'ios-send'}
-                                    size={26}
-                                    color={'#fff'}
-                                />{' '}
-                                Send Feedback
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.item}>
-                    <View style={styles.infoContent}>
-                        <TouchableOpacity onPress={() => context.logoutUser()}>
-                            <Text style={styles.info}>
-                                {' '}
-                                <Ionicons
-                                    name={'ios-exit'}
-                                    size={26}
-                                    color={'#fff'}
-                                />{' '}
-                                Logout
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                    );
+                })}
             </View>
             <Modal isVisible={showModal} onBackdropPress={toggleShowModal}>
                 <View style={styles.modalBody}>
@@ -129,6 +154,51 @@ const ProfileScreenBody = ({ navigation }) => {
                     <Button
                         title={'Send Feedback  '}
                         onPress={addFeedbackHandler}
+                        buttonStyle={styles.unregisterButton}
+                        iconRight={true}
+                        icon={
+                            <Ionicons
+                                name={'ios-send'}
+                                color={'#fff'}
+                                size={26}
+                            />
+                        }
+                    />
+                </View>
+            </Modal>
+            <Modal
+                isVisible={showEditModal}
+                onBackdropPress={toggleShowEditModal}
+            >
+                <View style={styles.modalBody}>
+                    <Text style={styles.modalTitle}>Update info</Text>
+                    <Input
+                        onChangeText={text =>
+                            setUserInfo({ ...userInfo, name: text })
+                        }
+                        value={userInfo.name}
+                        leftIcon={<Ionicons name={'ios-person'} size={26} />}
+                        leftIconContainerStyle={{ marginRight: 10 }}
+                    />
+                    <Input
+                        onChangeText={text =>
+                            setUserInfo({ ...userInfo, lastName: text })
+                        }
+                        value={userInfo.lastName}
+                        leftIcon={<Ionicons name={'ios-person'} size={26} />}
+                        leftIconContainerStyle={{ marginRight: 10 }}
+                    />
+                    <Input
+                        onChangeText={text =>
+                            setUserInfo({ ...userInfo, email: text })
+                        }
+                        value={userInfo.email}
+                        leftIcon={<Ionicons name={'ios-mail'} size={26} />}
+                        leftIconContainerStyle={{ marginRight: 10 }}
+                    />
+                    <Button
+                        title={'Update info  '}
+                        onPress={updateUserInfo}
                         buttonStyle={styles.unregisterButton}
                         iconRight={true}
                         icon={
@@ -171,30 +241,9 @@ const ProfileScreenBody = ({ navigation }) => {
         </View>
     );
 
-    useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 1000,
-        }).start();
-        CustomerService.getCustomer({
-            Authorization: `Bearer ${context.token}`,
-        }).then(customer => setUserInfo(customer));
-    }, [context.token]);
-
-    return (
-        <View style={styles.container}>
-            {context.isAuthenticated ? registerLayout : unregisterLayout}
-        </View>
-    );
-};
-
-export const ProfileScreen = () => {
-    const ProfileStack = createStackNavigator();
-    const context = useContext(ClientContext);
-
     const headerEditButton = () => {
         return context.isAuthenticated ? (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={toggleShowEditModal}>
                 <Ionicons
                     name={'ios-brush'}
                     style={{ paddingRight: 20 }}
@@ -205,6 +254,28 @@ export const ProfileScreen = () => {
         ) : null;
     };
 
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+        }).start();
+        navigation.setOptions({
+            headerRight: headerEditButton,
+        });
+        update();
+    }, [navigation, update]);
+
+    return (
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
+            <View style={styles.container}>
+                {context.isAuthenticated ? registerLayout : unregisterLayout}
+            </View>
+        </ScrollView>
+    );
+};
+
+export const ProfileScreen = () => {
+    const ProfileStack = createStackNavigator();
     return (
         <ProfileStack.Navigator>
             <ProfileStack.Screen
@@ -213,7 +284,6 @@ export const ProfileScreen = () => {
                 options={{
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
-                    headerRight: headerEditButton,
                 }}
             />
             <ProfileStack.Screen
@@ -253,8 +323,6 @@ export const ProfileScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignContent: 'center',
-        justifyContent: 'center',
         height: '100%',
     },
     modalBody: {
@@ -281,7 +349,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         textAlign: 'center',
         flexDirection: 'column',
-        backgroundColor: '#cdcdcd'
+        backgroundColor: '#fff',
     },
     unregisterItem: {
         alignItems: 'center',
@@ -297,6 +365,7 @@ const styles = StyleSheet.create({
     unregisterButton: {
         width: 200,
         backgroundColor: '#000',
+        marginTop: 20,
     },
     registerWrapper: {
         flex: 1,
@@ -313,8 +382,7 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     header: {
-        backgroundColor: '#DCDCDC',
-        paddingTop: 150,
+        backgroundColor: '#fff',
     },
     headerContent: {
         padding: 30,
@@ -337,10 +405,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     body: {
-        backgroundColor: '#000',
-        height: 500,
-        alignItems: 'center',
-        paddingLeft: 40,
+        backgroundColor: '#fff',
     },
     item: {
         flexDirection: 'row',
@@ -364,5 +429,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginTop: 20,
         color: '#FFFFFF',
+    },
+    updateInfoInput: {
+        marginBottom: 10,
+    },
+    inputStyle: {
+        marginLeft: 10,
+        color: '#000',
     },
 });

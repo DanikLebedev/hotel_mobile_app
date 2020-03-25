@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, TextInput, Text, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    TextInput,
+    Text,
+    TouchableWithoutFeedback,
+    Keyboard,
+} from 'react-native';
 import { ChangeEvent, useContext, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Input, Button } from 'react-native-elements';
@@ -55,70 +62,70 @@ export const RegisterScreen = ({ navigation }) => {
     }
 
     return (
-      <DismissKeyboard>
-        <View style={styles.container}>
-            <View style={styles.loginWrapper}>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-mail" size={26} />}
-                        value={email}
-                        keyboardType={'email-address'}
-                        textContentType="emailAddress"
-                        onChangeText={text => setEmail(text)}
-                        placeholderTextColor={'#fff'}
-                        placeholder={'email'}
-                        inputStyle={styles.inputStyle}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-lock" size={26} />}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                        placeholder={'password'}
-                        textContentType={'password'}
-                        placeholderTextColor={'#fff'}
-                        inputStyle={styles.inputStyle}
-                        secureTextEntry={true}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-person" size={26} />}
-                        value={name}
-                        onChangeText={text => setName(text)}
-                        placeholder={'first name'}
-                        placeholderTextColor={'#fff'}
-                        inputStyle={styles.inputStyle}
-                    />
-                </View>
-                <View style={styles.inputWrapper}>
-                    <Input
-                        leftIcon={<Ionicons name="ios-person" size={26} />}
-                        value={lastName}
-                        onChangeText={text => setLastName(text)}
-                        placeholder={'last name'}
-                        placeholderTextColor={'#fff'}
-                        inputStyle={styles.inputStyle}
-                    />
-                </View>
-                <Button
-                    iconRight
-                    icon={
-                        <Ionicons
-                            name={'ios-log-in'}
-                            color={'#fff'}
-                            size={26}
+        <DismissKeyboard>
+            <View style={styles.container}>
+                <View style={styles.loginWrapper}>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={<Ionicons name="ios-mail" size={26} />}
+                            value={email}
+                            keyboardType={'email-address'}
+                            textContentType="emailAddress"
+                            onChangeText={text => setEmail(text)}
+                            placeholderTextColor={'#fff'}
+                            placeholder={'email'}
+                            inputStyle={styles.inputStyle}
                         />
-                    }
-                    raised
-                    title={'Register  '}
-                    onPress={registerHandler}
-                    buttonStyle={styles.unregisterButton}
-                />
+                    </View>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={<Ionicons name="ios-lock" size={26} />}
+                            value={password}
+                            onChangeText={text => setPassword(text)}
+                            placeholder={'password'}
+                            textContentType={'password'}
+                            placeholderTextColor={'#fff'}
+                            inputStyle={styles.inputStyle}
+                            secureTextEntry={true}
+                        />
+                    </View>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={<Ionicons name="ios-person" size={26} />}
+                            value={name}
+                            onChangeText={text => setName(text)}
+                            placeholder={'first name'}
+                            placeholderTextColor={'#fff'}
+                            inputStyle={styles.inputStyle}
+                        />
+                    </View>
+                    <View style={styles.inputWrapper}>
+                        <Input
+                            leftIcon={<Ionicons name="ios-person" size={26} />}
+                            value={lastName}
+                            onChangeText={text => setLastName(text)}
+                            placeholder={'last name'}
+                            placeholderTextColor={'#fff'}
+                            inputStyle={styles.inputStyle}
+                        />
+                    </View>
+                    <Button
+                        iconRight
+                        icon={
+                            <Ionicons
+                                name={'ios-log-in'}
+                                color={'#fff'}
+                                size={26}
+                            />
+                        }
+                        raised
+                        title={'Register  '}
+                        onPress={registerHandler}
+                        buttonStyle={styles.unregisterButton}
+                    />
+                </View>
             </View>
-        </View>
-      </DismissKeyboard>
+        </DismissKeyboard>
     );
 };
 

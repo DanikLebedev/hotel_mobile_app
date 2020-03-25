@@ -47,7 +47,10 @@ export const MoreScreenBody = ({ navigation }) => {
                         >
                             <ListItem
                                 title={item.title}
-                                containerStyle={{backgroundColor: '#cdcdcd', borderColor: '#000'}}
+                                containerStyle={{
+                                    backgroundColor: '#cdcdcd',
+                                    borderColor: '#000',
+                                }}
                                 leftIcon={
                                     <Ionicons name={item.icon} size={26} />
                                 }
@@ -61,7 +64,6 @@ export const MoreScreenBody = ({ navigation }) => {
         </View>
     );
 };
-
 
 const RoomInfoLogoTitle = props => {
     return (
@@ -106,9 +108,6 @@ const AboutLogoTitle = props => {
         </View>
     );
 };
-
-
-
 
 export const MoreScreen = () => {
     const MoreStack = createStackNavigator();
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         height: '100%',
-        backgroundColor: '#cdcdcd'
+        backgroundColor: '#cdcdcd',
     },
     searchHeader: {
         flexDirection: 'row',

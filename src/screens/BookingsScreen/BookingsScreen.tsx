@@ -25,7 +25,7 @@ export const BookingsScreenBody = ({ navigation }) => {
         context.fetchedUserInfo.email,
     );
     const [refreshing, setRefreshing] = useState(false);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const update = useCallback(() => {
         if (context.isAuthenticated) {
@@ -65,14 +65,14 @@ export const BookingsScreenBody = ({ navigation }) => {
 
     useEffect(() => {
         navigation.addListener('focus', () => {
-            setLoading(true)
-            update()
-            setLoading(false)
+            setLoading(true);
+            update();
+            setLoading(false);
         });
     }, [context.orderHistory, navigation]);
 
-    if(loading) {
-        return <Loader/>
+    if (loading) {
+        return <Loader />;
     }
 
     if (!context.isAuthenticated || !context.orderHistory) {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: '#cdcdcd'
+        backgroundColor: '#cdcdcd',
     },
     title: {
         textAlign: 'center',

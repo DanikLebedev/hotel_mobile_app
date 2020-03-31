@@ -72,7 +72,7 @@ export const RegisterScreen = ({ navigation }) => {
                             keyboardType={'email-address'}
                             textContentType="emailAddress"
                             onChangeText={text => setEmail(text)}
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#cdcdcd'}
                             placeholder={'email'}
                             inputStyle={styles.inputStyle}
                         />
@@ -84,7 +84,7 @@ export const RegisterScreen = ({ navigation }) => {
                             onChangeText={text => setPassword(text)}
                             placeholder={'password'}
                             textContentType={'password'}
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
                             secureTextEntry={true}
                         />
@@ -95,7 +95,7 @@ export const RegisterScreen = ({ navigation }) => {
                             value={name}
                             onChangeText={text => setName(text)}
                             placeholder={'first name'}
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
                         />
                     </View>
@@ -105,7 +105,7 @@ export const RegisterScreen = ({ navigation }) => {
                             value={lastName}
                             onChangeText={text => setLastName(text)}
                             placeholder={'last name'}
-                            placeholderTextColor={'#fff'}
+                            placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
                         />
                     </View>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'center',
-        backgroundColor: '#cdcdcd',
+        backgroundColor: '#ffff',
     },
     loginWrapper: {
         justifyContent: 'center',

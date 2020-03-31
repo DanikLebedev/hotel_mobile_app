@@ -48,7 +48,7 @@ export const MoreScreenBody = ({ navigation }) => {
                             <ListItem
                                 title={item.title}
                                 containerStyle={{
-                                    backgroundColor: '#cdcdcd',
+                                    backgroundColor: '#fff',
                                     borderColor: '#000',
                                 }}
                                 leftIcon={
@@ -143,6 +143,7 @@ export const MoreScreen = () => {
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },
                     headerTintColor: '#fff',
+                    headerBackTitle: 'Rooms'
                 }}
             />
             <MoreStack.Screen
@@ -165,6 +166,7 @@ export const MoreScreen = () => {
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },
                     headerTintColor: '#fff',
+                    headerBackTitle: 'Articles'
                 }}
             />
             <MoreStack.Screen
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         height: '100%',
-        backgroundColor: '#cdcdcd',
+        backgroundColor: '#fff',
     },
     searchHeader: {
         flexDirection: 'row',

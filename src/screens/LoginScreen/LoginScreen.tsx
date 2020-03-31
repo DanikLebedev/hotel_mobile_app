@@ -77,7 +77,7 @@ export const LoginScreen = ({ navigation }) => {
                                 value={email}
                                 keyboardType={'email-address'}
                                 textContentType="emailAddress"
-                                placeholderTextColor={'#fff'}
+                                placeholderTextColor={'#cdcdcd'}
                                 onChangeText={text => setEmail(text)}
                                 placeholder={'email'}
                                 inputStyle={styles.inputStyle}
@@ -95,7 +95,7 @@ export const LoginScreen = ({ navigation }) => {
                                 value={password}
                                 onChangeText={text => setPassword(text)}
                                 placeholder={'password'}
-                                placeholderTextColor={'#fff'}
+                                placeholderTextColor={'#cdcdcd'}
                                 textContentType={'password'}
                                 inputStyle={styles.inputStyle}
                                 secureTextEntry={true}
@@ -149,6 +149,6 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
-        backgroundColor: '#cdcdcd',
+        backgroundColor: '#fff',
     },
 });

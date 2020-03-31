@@ -18,7 +18,7 @@ import { config } from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DatePicker from 'react-native-datepicker';
-import { Data, Order } from '../../interfaces/clientInterfaces';
+import { Data, Order, OrderCart } from '../../interfaces/clientInterfaces';
 import Toast from 'react-native-tiny-toast';
 import { ErrorToast, SuccessToast } from '../../components/Toast/Toast';
 import { OrderService } from '../../APIServices/orderService';
@@ -34,14 +34,17 @@ const DismissKeyboard = ({ children }) => {
 export const RoomInfoScreen = ({ navigation }) => {
     const context = useContext(ClientContext);
     const [roomId, setRoomId] = useState<string>('');
-    const [order, setOrder] = useState<Order>({
+    const [order, setOrder] = useState<OrderCart>({
         category: '',
         checkIn: '',
         checkOut: '',
         comment: '',
-        guests: '',
+        guests: 0,
         price: 0,
         userEmail: context.fetchedUserInfo.email,
+        title: '',
+        status: 'booked',
+        userId: ''
     });
     const navigationState = useNavigationState(state => state.routes);
 
@@ -118,6 +121,7 @@ export const RoomInfoScreen = ({ navigation }) => {
                     checkIn: date,
                     category: roomInfo[0].category,
                     price: roomInfo[0].price,
+                    title: roomInfo[0].title,
                 })
             }
         />
@@ -191,6 +195,28 @@ export const RoomInfoScreen = ({ navigation }) => {
                             <View style={styles.featuresWrapper}>
                                 <View style={styles.featuresItem}>
                                     <Ionicons
+                                        name={'ios-pizza'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Food:{' '}
+                                        {roomInfo[0] ? roomInfo[0].food : null}
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
+                                        name={'ios-bed'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Beds:{' '}
+                                        {roomInfo[0] ? roomInfo[0].beds : null}
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
                                         name={'ios-cash'}
                                         color={'#000'}
                                         size={20}
@@ -216,6 +242,17 @@ export const RoomInfoScreen = ({ navigation }) => {
                                 </View>
                                 <View style={styles.featuresItem}>
                                     <Ionicons
+                                        name={'ios-pricetag'}
+                                        color={'#000'}
+                                        size={20}
+                                    />
+                                    <Text style={styles.featuresItemText}>
+                                        Rooms:{' '}
+                                        {roomInfo[0] ? roomInfo[0].rooms : null}
+                                    </Text>
+                                </View>
+                                <View style={styles.featuresItem}>
+                                    <Ionicons
                                         name={'ios-business'}
                                         color={'#000'}
                                         size={20}
@@ -224,17 +261,6 @@ export const RoomInfoScreen = ({ navigation }) => {
                                         Area:{' '}
                                         {roomInfo[0] ? roomInfo[0].area : null}{' '}
                                         m2
-                                    </Text>
-                                </View>
-                                <View style={styles.featuresItem}>
-                                    <Ionicons
-                                        name={'ios-pricetag'}
-                                        color={'#000'}
-                                        size={20}
-                                    />
-                                    <Text style={styles.featuresItemText}>
-                                        Rooms:{' '}
-                                        {roomInfo[0] ? roomInfo[0].rooms : null}
                                     </Text>
                                 </View>
                             </View>
@@ -357,8 +383,11 @@ const styles = StyleSheet.create({
     },
     featuresWrapper: {
         flex: 1,
-        justifyContent: 'space-around',
-        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingVertical: 10
     },
     featuresItem: {
         flexDirection: 'row',

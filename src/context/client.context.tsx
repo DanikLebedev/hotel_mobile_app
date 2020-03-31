@@ -45,6 +45,8 @@ export const ClientContext = createContext<ClientContext>({
             rooms: 0,
             title: '',
             _id: '',
+            food: '',
+            beds: 0
         },
     ],
     fetchedAllArticles: [{ title: '', image: '', text: '', createdAt: '' }],
@@ -69,6 +71,7 @@ export const ClientContext = createContext<ClientContext>({
             guests: 0,
             userId: '',
             price: 0,
+            title: ''
         },
     ],
 });

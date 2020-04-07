@@ -27,6 +27,7 @@ import { ErrorToast } from '../../components/Toast/Toast';
 import { Loader } from '../../components/Loader/Loader';
 import { CategoryService } from '../../APIServices/categoryService';
 import { ArticleInfoScreen } from '../ArticleInfoScreen/ArticleInfoScreen';
+import { ArticleInfoLogoTitle } from '../MoreScreen/MoreScreen';
 
 const HomeScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
@@ -295,6 +296,7 @@ export const HomeScreen = () => {
                 name={'ArticleInfo'}
                 component={ArticleInfoScreen}
                 options={{
+                    headerTitle: props => <ArticleInfoLogoTitle {...props} />,
                     headerStyle: { backgroundColor: '#000' },
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },

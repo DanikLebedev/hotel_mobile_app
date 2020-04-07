@@ -14,7 +14,7 @@ import { ClientContext } from '../../context/client.context';
 import { UserData } from '../../interfaces/clientInterfaces';
 import { AuthService } from '../../APIServices/authService';
 import Toast from 'react-native-tiny-toast';
-import { SuccessToast } from '../../components/Toast/Toast';
+import { ErrorToast, SuccessToast } from '../../components/Toast/Toast';
 import { Loader } from '../../components/Loader/Loader';
 
 const DismissKeyboard = ({ children }) => {
@@ -32,28 +32,82 @@ export const RegisterScreen = ({ navigation }) => {
     const [lastName, setLastName] = useState('');
     const [loading, setLoading] = useState(false);
     const context = useContext(ClientContext);
+    const [validateError, setValidateError] = useState({
+        email: false,
+        password: false,
+        name: false,
+        lastName: false,
+    });
 
     const registerHandler = async () => {
         const form = { email, password, name, lastName };
-        try {
-            setLoading(true);
-            const data: UserData = await AuthService.registerUser(form, {
-                'Content-Type': 'application/json',
+        if (email === '' && password === '' && name === '' && lastName === '') {
+            setValidateError({
+                ...validateError,
+                password: true,
+                email: true,
+                lastName: true,
+                name: true,
             });
-            const loginData: UserData = await AuthService.loginUser(form, {
-                'Content-Type': 'application/json',
+        } else if (email === '') {
+            setValidateError({
+                ...validateError,
+                email: true,
+                password: false,
+                name: false,
+                lastName: false,
             });
-            setLoading(false);
-            Toast.showSuccess(data.message, SuccessToast);
-            context.loginUser(
-                loginData.token,
-                loginData.userId,
-                loginData.status,
-                loginData.email,
-            );
-            navigation.popToTop();
-        } catch (e) {
-            console.log(e);
+        } else if (password === '') {
+            setValidateError({
+                ...validateError,
+                password: true,
+                email: false,
+                name: false,
+                lastName: false,
+            });
+        } else if (name === '') {
+            setValidateError({
+                ...validateError,
+                email: false,
+                password: false,
+                name: true,
+                lastName: false,
+            });
+        } else if (lastName === '') {
+            setValidateError({
+                ...validateError,
+                email: false,
+                password: false,
+                name: false,
+                lastName: true,
+            });
+        } else {
+            try {
+                setLoading(true);
+                const data: UserData = await AuthService.registerUser(form, {
+                    'Content-Type': 'application/json',
+                });
+                const loginData: UserData = await AuthService.loginUser(form, {
+                    'Content-Type': 'application/json',
+                });
+                setLoading(false);
+                if(!data.customers) {
+                    Toast.show(data.message, ErrorToast);
+                } else {
+                    Toast.showSuccess(data.message, SuccessToast);
+                    context.loginUser(
+                        loginData.token,
+                        loginData.userId,
+                        loginData.status,
+                        loginData.email,
+                    );
+                    navigation.popToTop();
+                }
+
+
+            } catch (e) {
+                console.log(e);
+            }
         }
     };
 
@@ -75,6 +129,7 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholderTextColor={'#cdcdcd'}
                             placeholder={'email'}
                             inputStyle={styles.inputStyle}
+                            errorMessage={validateError.email ? 'This is required': ''}
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -87,6 +142,8 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
                             secureTextEntry={true}
+                            errorMessage={validateError.password ? 'This is required': ''}
+
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -97,6 +154,8 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholder={'first name'}
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
+                            errorMessage={validateError.name ? 'This is required': ''}
+
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -107,6 +166,8 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholder={'last name'}
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
+                            errorMessage={validateError.lastName ? 'This is required': ''}
+
                         />
                     </View>
                     <Button

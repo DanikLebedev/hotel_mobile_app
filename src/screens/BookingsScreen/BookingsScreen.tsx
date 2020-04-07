@@ -94,7 +94,7 @@ export const BookingsScreenBody = ({ navigation }) => {
             {context.orderHistory[0] ? (
                 filteredUserOrders.length ? (
                     <FlatList
-                        style={{flex: 1}}
+                        style={{ flex: 1 }}
                         data={filteredUserOrders}
                         refreshControl={
                             <RefreshControl

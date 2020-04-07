@@ -110,7 +110,7 @@ export interface OrderCart {
     guests: number;
     price: number;
     comment: string;
-    title: string
+    title: string;
 }
 
 export interface OrderCarts {
@@ -136,6 +136,7 @@ export interface UserData {
     status: string;
     email: string;
     message: string;
+    customers: Customer
 }
 
 export interface Article {
@@ -148,4 +149,16 @@ export interface Article {
 
 export interface Articles {
     article: Article[];
+}
+
+export interface Comment {
+    text: string;
+    createdAt?: string;
+    userEmail: string;
+    articleId: string | undefined;
+    _id?: string;
+}
+
+export interface Comments {
+    comment: Comment[];
 }

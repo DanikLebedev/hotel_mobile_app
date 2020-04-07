@@ -20,18 +20,18 @@ export const AboutUsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginVertical: 20
+        marginVertical: 20,
     },
     mainTitle: {
         textAlign: 'center',
         fontSize: 20,
-        marginBottom: 10
+        marginBottom: 10,
     },
     descriptionWrapper: {
         flex: 1,
-        marginHorizontal: 20
+        marginHorizontal: 20,
     },
     descriptionText: {
         fontSize: 18,
-    }
+    },
 });

@@ -39,12 +39,12 @@ export const RoomInfoScreen = ({ navigation }) => {
         checkIn: '',
         checkOut: '',
         comment: '',
-        guests: 0,
+        guests: 1,
         price: 0,
         userEmail: context.fetchedUserInfo.email,
         title: '',
         status: 'booked',
-        userId: ''
+        userId: '',
     });
     const navigationState = useNavigationState(state => state.routes);
 
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     featuresItem: {
         flexDirection: 'row',

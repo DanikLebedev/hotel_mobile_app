@@ -82,7 +82,7 @@ const RoomListLogoTitle = props => {
     );
 };
 
-const ArticleInfoLogoTitle = props => {
+export const ArticleInfoLogoTitle = props => {
     return (
         <View style={styles.searchHeader}>
             <Ionicons name={'ios-clipboard'} color={'#fff'} size={26} />
@@ -143,7 +143,7 @@ export const MoreScreen = () => {
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },
                     headerTintColor: '#fff',
-                    headerBackTitle: 'Rooms'
+                    headerBackTitle: 'Rooms',
                 }}
             />
             <MoreStack.Screen
@@ -166,7 +166,7 @@ export const MoreScreen = () => {
                     headerTitleStyle: { color: '#fff' },
                     headerBackTitleStyle: { color: '#fff' },
                     headerTintColor: '#fff',
-                    headerBackTitle: 'Articles'
+                    headerBackTitle: 'Articles',
                 }}
             />
             <MoreStack.Screen

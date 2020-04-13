@@ -5,18 +5,19 @@ import {
     Comment,
     Comments,
 } from '../interfaces/clientInterfaces';
+import { config } from '../../config';
 
 export class CommentService {
     public static async getAllComments(): Promise<Comments> {
         const comments: Comments = await CRUDServices.getData(
-            '/api/client/comment',
+            config.API_URL + '/api/client/comment',
         );
         return comments;
     }
 
     public static async postComment(body: {}, headers?: {}): Promise<Data> {
         const response: Data = await CRUDServices.postData(
-            '/api/client/comment/add',
+            config.API_URL + '/api/client/comment/add',
             body,
             headers,
         );
@@ -25,7 +26,7 @@ export class CommentService {
 
     public static async deleteComment(body: {}, headers?: {}): Promise<Data> {
         const response: Data = await CRUDServices.deleteData(
-            '/api/client/comment/delete',
+            config.API_URL+ '/api/client/comment/delete',
             body,
             headers,
         );
@@ -34,7 +35,7 @@ export class CommentService {
 
     public static async updateComment(body: {}, headers?: {}): Promise<Data> {
         const response: Data = await CRUDServices.putData(
-            '/api/client/comment/update',
+            config.API_URL + '/api/client/comment/update',
             body,
             headers,
         );

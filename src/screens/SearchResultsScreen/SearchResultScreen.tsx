@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#cdcdcd',
         padding: 20,
+        marginVertical: 10,
     },
     roomTitle: {
         fontSize: 20,

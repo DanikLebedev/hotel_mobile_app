@@ -24,23 +24,42 @@ export const OrderHistoryItem: React.FC<OrderHistoryItem> = (
         >
             <View>
                 <Text style={styles.orderHistoryField}>
+                    <Ionicons
+                        name={'ios-calendar'}
+                        size={30}
+                        color={'#000'}
+                    />
+                    {' '}
                     Check In:{' '}
                     {new Date(props.order.checkIn).toLocaleDateString()}
                 </Text>
                 <Text style={styles.orderHistoryField}>
+                    <Ionicons
+                        name={'ios-calendar'}
+                        size={30}
+                        color={'#000'}
+                    />
+                    {' '}
                     Check Out:{' '}
                     {new Date(props.order.checkOut).toLocaleDateString()}
                 </Text>
                 <Text style={styles.orderHistoryField}>
+                    <Ionicons
+                        name={'ios-cash'}
+                        size={30}
+                        color={'#000'}
+                    />
+                    {' '}
                     Price: {props.order.price}$
                 </Text>
             </View>
             <View>
                 <View>
+
                     <Ionicons
                         name={'ios-arrow-forward'}
                         size={30}
-                        color={'#fff'}
+                        color={'#000'}
                     />
                 </View>
             </View>
@@ -92,17 +111,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         padding: 20,
         borderRadius: 20,
         marginTop: 20,
-        borderWidth: 2,
-        borderColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
     },
     orderHistoryField: {
-        color: '#fff',
+        color: '#000',
         fontSize: 15,
         marginBottom: 10,
+        alignItems: 'center',
+        flex: 1
     },
     modalBody: {
         backgroundColor: '#fff',

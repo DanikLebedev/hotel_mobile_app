@@ -410,7 +410,6 @@ const styles = StyleSheet.create({
     },
     bookForm: {
         flex: 1,
-        borderWidth: 1,
         padding: 20,
         shadowColor: '#000',
         shadowOpacity: 0.25,
@@ -419,6 +418,8 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         elevation: 5,
         borderRadius: 20,
+        backgroundColor: '#fff',
+
     },
     bookFormTitle: {
         fontSize: 20,

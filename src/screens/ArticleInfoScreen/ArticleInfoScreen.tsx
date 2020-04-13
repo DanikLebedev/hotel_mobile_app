@@ -3,11 +3,9 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
     SafeAreaView,
     ScrollView,
     ImageBackground,
-    TextInput,
     TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -16,11 +14,24 @@ import { useNavigationState, StackActions } from '@react-navigation/native';
 import { useContext, useEffect } from 'react';
 import { ClientContext } from '../../context/client.context';
 import { useState } from 'react';
+import { Comment, Comments } from '../../interfaces/clientInterfaces';
+import { CommentService } from '../../APIServices/commentService';
+import { Input, Button } from 'react-native-elements';
+import Toast from 'react-native-tiny-toast';
+import { ErrorToast } from '../../components/Toast/Toast';
+
 
 export const ArticleInfoScreen = () => {
     const context = useContext(ClientContext);
     const [articleId, setArticleId] = useState<string>('');
+    const [comments, setComments] = useState<Comment[]>(context.fetchedAllComments)
+    const [commentForm, setCommentForm] = useState<Comment>({
+        articleId: undefined,
+        text: "",
+        userEmail: context.fetchedUserInfo.email
+    })
     const navigationState = useNavigationState(state => state.routes);
+
 
     const checkParams = () => {
         const paramObj = navigationState.filter(({ params }) => {
@@ -29,12 +40,31 @@ export const ArticleInfoScreen = () => {
         setArticleId(paramObj[0].params['articleId']);
     };
 
+    const addCommentHandler = async () => {
+        try {
+            setCommentForm({ ...commentForm, text: ''})
+            const data = await CommentService.postComment(
+                { ...commentForm },
+                { Authorization: `Bearer ${context.token}`, 'Content-Type': 'application/json' },
+            );
+            updateComments();
+        } catch (e) {
+            Toast.show('Something went wrong', ErrorToast)
+        }
+    };
+
     const articleInfo = context.fetchedAllArticles.filter(article => {
         return article._id === articleId;
     });
 
+    const updateComments = async () => {
+        const { comment }: Comments = await CommentService.getAllComments();
+        setComments(comment);
+    }
+
     useEffect(() => {
         checkParams();
+        updateComments()
     }, []);
 
     return (
@@ -68,6 +98,24 @@ export const ArticleInfoScreen = () => {
                         <Text style={styles.text}>
                             {articleInfo[0] ? articleInfo[0].text : null}
                         </Text>
+                    </View>
+                    <View>
+                        <Text style={styles.commentsTitle}>Comments</Text>
+                        <View style={styles.commentInputWrapper}>
+                            <Input containerStyle={styles.commentInput} value={commentForm.text} placeholder={'Your comment...'} onChangeText={text => setCommentForm({...commentForm, articleId, text})}/>
+                            <Button title={'Send'} buttonStyle={{backgroundColor: '#000'}} onPress={addCommentHandler}/>
+                        </View>
+                        <View style={styles.commentWrapper}>
+                            {comments.length ? comments.map(comment => {
+                                return (
+                                    <View>
+                                        <Text>{comment.userEmail}</Text>
+                                        <Text>{comment.text}</Text>
+                                        <Text>{comment.createdAt}</Text>
+                                    </View>
+                                )
+                            }): <Text>There are no comments yet</Text>}
+                        </View>
                     </View>
                 </KeyboardAwareScrollView>
             </ScrollView>
@@ -119,4 +167,20 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 18,
     },
+    commentsTitle: {
+        fontSize: 20,
+        textAlign: 'center'
+    },
+    commentWrapper: {
+        flex: 1,
+        marginHorizontal: 10
+    },
+    commentInputWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    commentInput: {
+        width: '70%'
+    }
 });

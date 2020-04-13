@@ -37,7 +37,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
         height: 100,
+        backgroundColor: '#fff',
+        borderRadius: 20,
         marginHorizontal: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
     },
     roomImage: {
         width: '100%',

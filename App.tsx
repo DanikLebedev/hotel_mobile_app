@@ -6,16 +6,17 @@ import { ClientContext } from './src/context/client.context';
 import { useCallback, useEffect, useState } from 'react';
 import {
     Article,
-    Category,
+    Category, Comment, Comments,
     Customer,
     OrderCart,
-    Room,
+    Room
 } from './src/interfaces/clientInterfaces';
 import { RoomService } from './src/APIServices/roomService';
 import { ArticleService } from './src/APIServices/articleService';
 import { CategoryService } from './src/APIServices/categoryService';
 import { CustomerService } from './src/APIServices/customerService';
 import { OrderService } from './src/APIServices/orderService';
+import { CommentService } from './src/APIServices/commentService';
 
 export default function App() {
     const {
@@ -33,13 +34,7 @@ export default function App() {
         Category[]
     >([]);
     const [orderHistory, setOrderHistory] = useState<OrderCart[]>([]);
-
-    const fetchOrdersHistory: CallableFunction = useCallback(() => {
-        OrderService.getOrdersHistory({
-            Authorization: `Bearer ${token}`,
-        }).then(({ ordercarts }) => setOrderHistory(ordercarts));
-    }, [token]);
-
+    const [fetchedAllComments, setFetchedAllComments] = useState<Comment[]>([])
     const [fetchedUserInfo, setFetchedUserInfo] = useState<Customer>({
         email: '',
         lastName: '',
@@ -47,6 +42,17 @@ export default function App() {
         order: [],
         password: '',
     });
+
+    const fetchOrdersHistory: CallableFunction = useCallback(() => {
+        OrderService.getOrdersHistory({
+            Authorization: `Bearer ${token}`,
+        }).then(({ ordercarts }) => setOrderHistory(ordercarts));
+    }, [token]);
+
+    const fetchAllComments: CallableFunction = useCallback(async () => {
+        const { comment }: Comments = await CommentService.getAllComments();
+        setFetchedAllComments(comment);
+    }, [token]);
 
     const fetchCustomerInfo: CallableFunction = useCallback(async () => {
         const customer: Customer = await CustomerService.getCustomer({
@@ -77,6 +83,7 @@ export default function App() {
         fetchAllRooms();
         fetchAllArticles();
         fetchAllCategories();
+        fetchAllComments()
         if (isAuthenticated) {
             fetchCustomerInfo();
             fetchOrdersHistory();
@@ -88,6 +95,7 @@ export default function App() {
         fetchOrdersHistory,
         fetchCustomerInfo,
         isAuthenticated,
+        fetchAllComments
     ]);
 
     return (
@@ -105,6 +113,7 @@ export default function App() {
                 fetchedAllCategories,
                 fetchedUserInfo,
                 orderHistory,
+                fetchedAllComments
             }}
         >
             <StatusBar barStyle={'light-content'} />

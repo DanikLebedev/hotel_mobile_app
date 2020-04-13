@@ -24,7 +24,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         <Ionicons
                             size={26}
                             name={'ios-business'}
-                            color={'#fff'}
+                            color={'#000'}
                         />
                         <Text style={styles.orderInfoField}>
                             Category: {props.order.category}
@@ -34,7 +34,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         <Ionicons
                             size={26}
                             name={'ios-calendar'}
-                            color={'#fff'}
+                            color={'#000'}
                         />
                         <Text style={styles.orderInfoField}>
                             Check In:{' '}
@@ -45,7 +45,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         <Ionicons
                             size={26}
                             name={'ios-calendar'}
-                            color={'#fff'}
+                            color={'#000'}
                         />
                         <Text style={styles.orderInfoField}>
                             Check Out:{' '}
@@ -55,7 +55,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         </Text>
                     </View>
                     <View style={styles.orderInfoItem}>
-                        <Ionicons size={26} name={'ios-cash'} color={'#fff'} />
+                        <Ionicons size={26} name={'ios-cash'} color={'#000'} />
                         <Text style={styles.orderInfoField}>
                             Price: {props.order.price}$
                         </Text>
@@ -64,7 +64,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         <Ionicons
                             size={26}
                             name={'ios-person'}
-                            color={'#fff'}
+                            color={'#000'}
                         />
                         <Text style={styles.orderInfoField}>
                             Guests: {props.order.guests}
@@ -74,7 +74,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                         <Ionicons
                             size={26}
                             name={'ios-clipboard'}
-                            color={'#fff'}
+                            color={'#000'}
                         />
                         <Text style={styles.orderInfoField}>
                             Wishes: {props.order.comment}
@@ -85,7 +85,7 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
                     <Ionicons
                         name={'ios-arrow-forward'}
                         size={30}
-                        color={'#fff'}
+                        color={'#000'}
                     />
                 </View>
             </View>
@@ -115,10 +115,14 @@ export const OrderItem: React.FC<OrderProps> = (props: OrderProps) => {
 
 const styles = StyleSheet.create({
     orderItem: {
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         marginHorizontal: 20,
         marginTop: 20,
         borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
     },
     orderInfoItem: {
         flexDirection: 'row',
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     orderInfoField: {
-        color: '#fff',
+        color: '#000',
         marginBottom: 10,
         fontSize: 16,
         justifyContent: 'center',

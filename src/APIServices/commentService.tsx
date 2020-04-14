@@ -26,7 +26,7 @@ export class CommentService {
 
     public static async deleteComment(body: {}, headers?: {}): Promise<Data> {
         const response: Data = await CRUDServices.deleteData(
-            config.API_URL+ '/api/client/comment/delete',
+            config.API_URL + '/api/client/comment/delete',
             body,
             headers,
         );

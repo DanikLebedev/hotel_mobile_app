@@ -1,11 +1,12 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 import {
     Article,
-    Category, Comment,
+    Category,
+    Comment,
     Customer,
     Order,
     OrderCart,
-    Room
+    Room,
 } from '../interfaces/clientInterfaces';
 
 export interface ClientContext {
@@ -21,7 +22,7 @@ export interface ClientContext {
     fetchedAllCategories: Category[];
     fetchedUserInfo: Customer;
     orderHistory: OrderCart[];
-    fetchedAllComments: Comment[]
+    fetchedAllComments: Comment[];
 }
 
 function noop() {}
@@ -81,7 +82,7 @@ export const ClientContext = createContext<ClientContext>({
             articleId: '',
             createdAt: '',
             text: '',
-            userEmail: ''
-        }
-    ]
+            userEmail: '',
+        },
+    ],
 });

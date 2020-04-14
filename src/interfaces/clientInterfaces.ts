@@ -136,7 +136,7 @@ export interface UserData {
     status: string;
     email: string;
     message: string;
-    customers: Customer
+    customers: Customer;
 }
 
 export interface Article {

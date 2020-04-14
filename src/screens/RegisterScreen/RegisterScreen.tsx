@@ -91,7 +91,7 @@ export const RegisterScreen = ({ navigation }) => {
                     'Content-Type': 'application/json',
                 });
                 setLoading(false);
-                if(!data.customers) {
+                if (!data.customers) {
                     Toast.show(data.message, ErrorToast);
                 } else {
                     Toast.showSuccess(data.message, SuccessToast);
@@ -103,8 +103,6 @@ export const RegisterScreen = ({ navigation }) => {
                     );
                     navigation.popToTop();
                 }
-
-
             } catch (e) {
                 console.log(e);
             }
@@ -129,7 +127,9 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholderTextColor={'#cdcdcd'}
                             placeholder={'email'}
                             inputStyle={styles.inputStyle}
-                            errorMessage={validateError.email ? 'This is required': ''}
+                            errorMessage={
+                                validateError.email ? 'This is required' : ''
+                            }
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -142,8 +142,9 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
                             secureTextEntry={true}
-                            errorMessage={validateError.password ? 'This is required': ''}
-
+                            errorMessage={
+                                validateError.password ? 'This is required' : ''
+                            }
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -154,8 +155,9 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholder={'first name'}
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
-                            errorMessage={validateError.name ? 'This is required': ''}
-
+                            errorMessage={
+                                validateError.name ? 'This is required' : ''
+                            }
                         />
                     </View>
                     <View style={styles.inputWrapper}>
@@ -166,8 +168,9 @@ export const RegisterScreen = ({ navigation }) => {
                             placeholder={'last name'}
                             placeholderTextColor={'#cdcdcd'}
                             inputStyle={styles.inputStyle}
-                            errorMessage={validateError.lastName ? 'This is required': ''}
-
+                            errorMessage={
+                                validateError.lastName ? 'This is required' : ''
+                            }
                         />
                     </View>
                     <Button

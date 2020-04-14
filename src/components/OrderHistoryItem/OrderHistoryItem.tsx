@@ -24,38 +24,22 @@ export const OrderHistoryItem: React.FC<OrderHistoryItem> = (
         >
             <View>
                 <Text style={styles.orderHistoryField}>
-                    <Ionicons
-                        name={'ios-calendar'}
-                        size={30}
-                        color={'#000'}
-                    />
-                    {' '}
+                    <Ionicons name={'ios-calendar'} size={30} color={'#000'} />{' '}
                     Check In:{' '}
                     {new Date(props.order.checkIn).toLocaleDateString()}
                 </Text>
                 <Text style={styles.orderHistoryField}>
-                    <Ionicons
-                        name={'ios-calendar'}
-                        size={30}
-                        color={'#000'}
-                    />
-                    {' '}
+                    <Ionicons name={'ios-calendar'} size={30} color={'#000'} />{' '}
                     Check Out:{' '}
                     {new Date(props.order.checkOut).toLocaleDateString()}
                 </Text>
                 <Text style={styles.orderHistoryField}>
-                    <Ionicons
-                        name={'ios-cash'}
-                        size={30}
-                        color={'#000'}
-                    />
-                    {' '}
+                    <Ionicons name={'ios-cash'} size={30} color={'#000'} />{' '}
                     Price: {props.order.price}$
                 </Text>
             </View>
             <View>
                 <View>
-
                     <Ionicons
                         name={'ios-arrow-forward'}
                         size={30}
@@ -125,7 +109,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 10,
         alignItems: 'center',
-        flex: 1
+        flex: 1,
     },
     modalBody: {
         backgroundColor: '#fff',

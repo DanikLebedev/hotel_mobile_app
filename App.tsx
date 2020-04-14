@@ -6,10 +6,12 @@ import { ClientContext } from './src/context/client.context';
 import { useCallback, useEffect, useState } from 'react';
 import {
     Article,
-    Category, Comment, Comments,
+    Category,
+    Comment,
+    Comments,
     Customer,
     OrderCart,
-    Room
+    Room,
 } from './src/interfaces/clientInterfaces';
 import { RoomService } from './src/APIServices/roomService';
 import { ArticleService } from './src/APIServices/articleService';
@@ -34,7 +36,7 @@ export default function App() {
         Category[]
     >([]);
     const [orderHistory, setOrderHistory] = useState<OrderCart[]>([]);
-    const [fetchedAllComments, setFetchedAllComments] = useState<Comment[]>([])
+    const [fetchedAllComments, setFetchedAllComments] = useState<Comment[]>([]);
     const [fetchedUserInfo, setFetchedUserInfo] = useState<Customer>({
         email: '',
         lastName: '',
@@ -83,7 +85,7 @@ export default function App() {
         fetchAllRooms();
         fetchAllArticles();
         fetchAllCategories();
-        fetchAllComments()
+        fetchAllComments();
         if (isAuthenticated) {
             fetchCustomerInfo();
             fetchOrdersHistory();
@@ -95,7 +97,7 @@ export default function App() {
         fetchOrdersHistory,
         fetchCustomerInfo,
         isAuthenticated,
-        fetchAllComments
+        fetchAllComments,
     ]);
 
     return (
@@ -113,7 +115,7 @@ export default function App() {
                 fetchedAllCategories,
                 fetchedUserInfo,
                 orderHistory,
-                fetchedAllComments
+                fetchedAllComments,
             }}
         >
             <StatusBar barStyle={'light-content'} />

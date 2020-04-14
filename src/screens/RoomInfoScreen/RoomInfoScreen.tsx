@@ -419,7 +419,6 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 20,
         backgroundColor: '#fff',
-
     },
     bookFormTitle: {
         fontSize: 20,

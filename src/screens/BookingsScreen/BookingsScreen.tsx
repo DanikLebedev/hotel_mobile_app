@@ -20,7 +20,7 @@ import { CustomerService } from '../../APIServices/customerService';
 
 export const BookingsScreenBody = ({ navigation }) => {
     const context = useContext(ClientContext);
-    const [orders, setOrders] = useState<OrderCart[]>(context.orderHistory);
+    const [orders, setOrders] = useState<OrderCart[]>([]);
     const [userEmail, setUserEmail] = useState<string>(
         context.fetchedUserInfo.email,
     );
